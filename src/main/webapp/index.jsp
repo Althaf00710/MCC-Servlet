@@ -22,14 +22,22 @@
 <body>
 <div id="vanta-bg" class="flex h-screen">
     <div class="w-3/5 flex items-center justify-center hidden sm:flex">
+        "Effortlessly manage bookings with real-time updates and instant customer notifications."
 
+        "Track live rides across Colombo City and optimize driver assignments seamlessly."
+
+        "Access customer insights – view registrations, preferences, and feedback in one dashboard."
+
+        "Secure and streamlined – process payments, apply discounts, and generate bills in seconds."
+
+        "Stay in control – monitor driver availability, cab maintenance, and daily revenue trends."
     </div>
 
     <div class="w-full sm:w-2/5 flex flex-col items-center justify-center p-6">
         <p class="text-2xl font-semibold text-white mb-4">Welcome Back,</p>
 
         <!-- Login Form -->
-        <form action="get" class="w-full max-w-sm bg-white p-6 rounded-lg shadow-md">
+        <form action="get" class="w-full max-w-sm bg-gray-700 p-6 rounded-lg shadow-md">
             <!-- Email Input -->
             <div class="mb-4">
                 <label for="email" class="block text-gray-700 font-bold mb-2">Email</label>
