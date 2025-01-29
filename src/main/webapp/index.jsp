@@ -6,59 +6,41 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.21/vanta.dots.min.js"></script>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-        #vanta-bg {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="views/static/css/loginPage.s.css">
 </head>
 <body>
 <div id="vanta-bg" class="flex h-screen">
     <div class="w-3/5 flex items-center justify-center hidden sm:flex">
-        "Effortlessly manage bookings with real-time updates and instant customer notifications."
-
-        "Track live rides across Colombo City and optimize driver assignments seamlessly."
-
-        "Access customer insights – view registrations, preferences, and feedback in one dashboard."
-
-        "Secure and streamlined – process payments, apply discounts, and generate bills in seconds."
-
-        "Stay in control – monitor driver availability, cab maintenance, and daily revenue trends."
+        <div id="carousel" class="max-w-2xl px-4">
+            <!-- Carousel items will be inserted here by JavaScript -->
+        </div>
     </div>
 
     <div class="w-full sm:w-2/5 flex flex-col items-center justify-center p-6">
-        <p class="text-2xl font-semibold text-white mb-4">Welcome Back,</p>
-
         <!-- Login Form -->
-        <form action="get" class="w-full max-w-sm bg-gray-700 p-6 rounded-lg shadow-md">
+        <p class="text-2xl font-semibold text-orange mb-4">Welcome Back,</p>
+        <form action="get" class="w-full max-w-sm p-6 rounded-2xl shadow-md bg-orange-50">
             <!-- Email Input -->
             <div class="mb-4">
-                <label for="email" class="block text-gray-700 font-bold mb-2">Email</label>
+
                 <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        placeholder="Enter your email"
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                        placeholder="Username"
                         required>
             </div>
 
             <!-- Password Input -->
             <div class="mb-4">
-                <label for="password" class="block text-gray-700 font-bold mb-2">Password</label>
+
                 <input
                         type="password"
                         id="password"
                         name="password"
                         class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        placeholder="Enter your password"
+                        placeholder="Password"
                         required>
             </div>
 
@@ -82,30 +64,10 @@
             </p>
         </form>
     </div>
-
-
-
-
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        VANTA.DOTS({
-            el: "#vanta-bg",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0xff7100,
-            backgroundColor: 0xf7f7f7,
-            size: 5.00,
-            spacing: 50.00,
-            showLines: false
-        });
-    });
-</script>
+
 </body>
 </html>
+
+<script src="views/static/js/loginPage.js"></script>
