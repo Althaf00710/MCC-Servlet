@@ -41,7 +41,7 @@
     item.className = 'carousel-item';
     item.innerHTML = `
                 <div class="text-orange-500 text-5xl font-semibold mb-2">${message.prefix}</div>
-                <div class="text-gray-600 text-2xl font-normal">${message.text}</div>
+                <div class="text-gray-700 text-xl font-normal">${message.text}</div>
             `;
     return item;
 }
