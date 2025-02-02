@@ -5,8 +5,12 @@ CREATE TABLE User (
                       firstName VARCHAR(50),
                       lastName VARCHAR(50),
                       email VARCHAR(100) NOT NULL UNIQUE,
-                      phoneNumber VARCHAR(15) NOT NULL
+                      phoneNumber VARCHAR(15) NOT NULL,
+                      avatarUrl VARCHAR(250) NULL
+
 );
+
+SELECT * FROM User;
 
 CREATE TABLE Customer (
                           id INT AUTO_INCREMENT PRIMARY KEY,

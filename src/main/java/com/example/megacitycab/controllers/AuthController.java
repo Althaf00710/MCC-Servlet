@@ -24,7 +24,7 @@ public class AuthController extends HttpServlet {
 
         if (!Validations.isNotNullOrEmpty(username) || !Validations.isValidPassword(password)) {
             request.setAttribute("error", "Invalid input!");
-            request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
             return;
         }
 
@@ -42,6 +42,6 @@ public class AuthController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 }

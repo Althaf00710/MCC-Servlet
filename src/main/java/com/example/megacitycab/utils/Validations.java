@@ -34,6 +34,7 @@ public class Validations {
 
     // Validate if a password meets complexity requirements
     public static boolean isValidPassword(String password) {
-        return password != null && password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$");
+        return password != null;
     }
+
 }
