@@ -29,7 +29,7 @@
                 alt="MCC Logo"
                 class="mb-4 w-3/4 mx-auto">
         <!-- Login Form -->
-            <form action="get" class="rounded-2xl">
+            <form method="get" class="rounded-2xl" action="">
                 <p class="text-2xl font-semibold text-gray-700"><span class="text-orange-500">Welcome</span> Back,</p>
                 <span class="text-sm text-gray-700 mb-4 font-light">Enter Your Valid Credentials to Login.</span>
                 <!-- Username Input -->
