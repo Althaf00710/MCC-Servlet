@@ -32,7 +32,7 @@ public class AuthController extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+            response.sendRedirect(request.getContextPath() + "/views/sites/admin/dashboard.jsp");
         } else {
             request.setAttribute("error", "Invalid credentials!");
             request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
