@@ -6,9 +6,9 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.21/vanta.dots.min.js"></script>
-    <link rel="stylesheet" href="views/static/css/loginPage.s.css">
+    <link rel="stylesheet" href="WEB-INF/views/static/css/loginPage.s.css">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-    <link rel="stylesheet" href="views/static/css/mouseAnimation.css">
+    <link rel="stylesheet" href="WEB-INF/views/static/css/mouseAnimation.css">
 </head>
 <body>
 <div id="vanta-bg" class="flex h-screen">
@@ -25,7 +25,7 @@
 
         <div class="w-full max-w-sm p-6 shadow-lg bg-white">
         <img
-                src="views/static/images/logoDark.png"
+                src="WEB-INF/views/static/images/logoDark.png"
                 alt="MCC Logo"
                 class="mb-4 w-3/4 mx-auto">
         <!-- Login Form -->
@@ -87,5 +87,5 @@
 </body>
 </html>
 
-<script src="views/static/js/loginPage.js"></script>
-<script src="views/static/js/mouseAnimation.js"></script>
+<script src="WEB-INF/views/static/js/loginPage.js"></script>
+<script src="WEB-INF/views/static/js/mouseAnimation.js"></script>
