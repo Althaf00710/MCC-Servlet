@@ -19,35 +19,35 @@
         <ul class="space-y-2">
             <li>
                 <a href="${pageContext.request.contextPath}/views/sites/admin/dashboard.jsp"
-                   class="flex items-center p-2 rounded-lg hover:bg-gray-700 ${param.activePage eq 'dashboard' ? 'bg-gray-700' : ''}">
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'dashboard' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-dashboard mr-3"></i>
                     Dashboard
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/bookings"
-                   class="flex items-center p-2 rounded-lg hover:bg-gray-700 ${param.activePage eq 'bookings' ? 'bg-gray-700' : ''}">
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'bookings' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-calendar mr-3"></i>
                     Bookings
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/views/sites/admin/user.jsp"
-                   class="flex items-center p-2 rounded-lg hover:bg-gray-700 ${param.activePage eq 'users' ? 'bg-gray-700' : ''}">
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'users' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-users mr-3"></i>
                     Users
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/drivers"
-                   class="flex items-center p-2 rounded-lg hover:bg-gray-700 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-steering-wheel mr-3"></i>
                     Drivers
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/reports"
-                   class="flex items-center p-2 rounded-lg hover:bg-gray-700 ${param.activePage eq 'reports' ? 'bg-gray-700' : ''}">
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'reports' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-document mr-3"></i>
                     Reports
                 </a>
@@ -56,14 +56,19 @@
     </nav>
 
     <!-- User Profile Section -->
-    <div class="p-4 border-b border-gray-700 text-center">
-        <div class="mb-4">
-            <img src="${not empty user.avatarUrl ? user.avatarUrl : pageContext.request.contextPath}/static/images/default-avatar.png"
-                 alt="User Avatar"
-                 class="w-16 h-16 rounded-full mx-auto mb-2">
-        </div>
-        <div class="font-semibold">
-            ${user.firstName} ${user.lastName}
+    <div class="p-4 pl-6 border-b border-gray-700">
+        <div class="flex items-center gap-3">
+            <!-- Avatar -->
+            <div class="flex-shrink-0">
+                <img src="${not empty user.avatarUrl ? user.avatarUrl : pageContext.request.contextPath}/views/static/images/defaultAvatar.png"
+                     alt="User Avatar"
+                     class="w-10 h-10 rounded-full">
+            </div>
+
+            <!-- Name -->
+            <div class="font-semibold text-sm text-white truncate uppercase">
+                ${user.firstName} ${user.lastName}
+            </div>
         </div>
     </div>
 
@@ -71,7 +76,7 @@
     <div class="mt-auto p-4 border-t border-gray-700">
         <form action="${pageContext.request.contextPath}/logout" method="post">
             <button type="submit"
-                    class="w-full flex items-center p-2 rounded-lg hover:bg-gray-700">
+                    class="w-full flex items-center p-2 pl-3 rounded-3xl hover:bg-orange-400 text-orange-400 hover:text-white">
                 <i class="fi fi-rr-exit mr-3"></i>
                 Logout
             </button>
