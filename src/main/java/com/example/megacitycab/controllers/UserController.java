@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/admin/users/*")
+@WebServlet("/users/*")
 public class UserController extends HttpServlet {
     private final UserDAO userDao = new UserDAOImpl();
 
@@ -27,13 +27,13 @@ public class UserController extends HttpServlet {
             case "/list":
                 List<User> users = userDao.getAllUsers();
                 request.setAttribute("users", users);
-                request.getRequestDispatcher("/WEB-INF/views/admin/users.jsp").forward(request, response);
+                request.getRequestDispatcher("/views/sites/admin/user.jsp").forward(request, response);
                 break;
             case "/edit":
                 int userId = Integer.parseInt(request.getParameter("id"));
                 User user = userDao.getUserById(userId);
                 request.setAttribute("user", user);
-                request.getRequestDispatcher("/WEB-INF/views/admin/edit-user.jsp").forward(request, response);
+                request.getRequestDispatcher("/views/sites/admin/user.jsp").forward(request, response);
                 break;
         }
     }
@@ -72,7 +72,7 @@ public class UserController extends HttpServlet {
 
         if (!Validations.isValidEmail(email) || !Validations.isValidPhoneNumber(phoneNumber)) {
             session.setAttribute("error", "Invalid email or phone number!");
-            response.sendRedirect(request.getContextPath() + "/admin/users/list");
+            response.sendRedirect(request.getContextPath() + "/users/list");
             return;
         }
 
@@ -94,7 +94,7 @@ public class UserController extends HttpServlet {
         } else {
             session.setAttribute("error", "Failed to add user!");
         }
-        response.sendRedirect(request.getContextPath() + "/admin/users/list");
+        response.sendRedirect(request.getContextPath() + "/users/list");
     }
 
     private void updateUser(HttpServletRequest request, HttpServletResponse response, HttpSession session)
@@ -104,7 +104,7 @@ public class UserController extends HttpServlet {
 
         if (existingUser == null) {
             session.setAttribute("error", "User not found!");
-            response.sendRedirect(request.getContextPath() + "/admin/users/list");
+            response.sendRedirect(request.getContextPath() + "/users/list");
             return;
         }
 
@@ -125,7 +125,7 @@ public class UserController extends HttpServlet {
         } else {
             session.setAttribute("error", "Failed to update user!");
         }
-        response.sendRedirect(request.getContextPath() + "/admin/users/list");
+        response.sendRedirect(request.getContextPath() + "/users/list");
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response, HttpSession session)
@@ -138,6 +138,6 @@ public class UserController extends HttpServlet {
         } else {
             session.setAttribute("error", "Failed to delete user!");
         }
-        response.sendRedirect(request.getContextPath() + "/admin/users/list");
+        response.sendRedirect(request.getContextPath() + "/users/list");
     }
 }

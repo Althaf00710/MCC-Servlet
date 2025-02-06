@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: Altha
@@ -10,11 +12,13 @@
 <head>
   <title>MCC | User</title>
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-  <link rel="stylesheet" href="../../static/css/mouseAnimation.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/mouseAnimation.css">
   <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-  <script src="../../static/js/userSearch.js"></script>
-  <link rel="stylesheet" href="../../static/css/avatarInitials.css">
-  <link rel="stylesheet" href="../../static/css/modalAnimation.css">
+  <script src="${pageContext.request.contextPath}/views/static/js/userSearch.js"></script>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/avatarInitials.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/modalAnimation.css">
+  <script src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
+  <script src="${pageContext.request.contextPath}/views/static/js/modalFunction.js"></script>
 </head>
 <body class="bg-gray-50">
   <%@ include file="../../common/navBar.jsp" %>
@@ -38,10 +42,10 @@
       </div>
 
       <!-- Right Add Button -->
-      <a href="javascript:void(0)" onclick="openModal()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-3xl flex items-center transition-colors duration-200 whitespace-nowrap">
+      <button onclick="openModal()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-3xl flex items-center transition-colors duration-200 whitespace-nowrap">
         <i class="fi fi-rr-plus mr-2"></i>
         Add User
-      </a>
+      </button>
     </div>
 
     <!-- Users Table -->
@@ -102,9 +106,6 @@
       </table>
     </div>
   </div>
-
-
-
 
 
   <!-- Add User Modal -->
@@ -169,8 +170,5 @@
       </form>
     </div>
   </div>
-
 </body>
-  <script src="../../static/js/mouseAnimation.js"></script>
-  <script src="../../static/js/modalFunction.js"></script>
 </html>
