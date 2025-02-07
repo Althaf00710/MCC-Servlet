@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/modalAnimation.css">
   <script src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
   <script src="${pageContext.request.contextPath}/views/static/js/modalFunction.js"></script>
+  <script src="${pageContext.request.contextPath}/views/static/js/confirmDelete.js"></script>
 </head>
 <body class="bg-gray-50">
   <%@ include file="../../common/navBar.jsp" %>
@@ -94,10 +95,15 @@
                   <i class="fi fi-rr-pencil mr-2"></i>
                   Edit
                 </a>
-                <a href="#" class="text-red-600 hover:text-red-900 px-3 py-1 rounded-3xl hover:bg-red-200 flex items-center">
-                  <i class="fi fi-rr-trash mr-2"></i>
-                  Delete
-                </a>
+                <!-- Delete Form -->
+                <form action="${pageContext.request.contextPath}/users/delete" method="post" class="inline">
+                  <input type="hidden" name="id" value="${user.id}">
+                  <button type="submit"
+                          class="text-red-600 hover:text-red-900 px-3 py-1 rounded-3xl hover:bg-red-200 flex items-center">
+                    <i class="fi fi-rr-trash mr-2"></i>
+                    Delete
+                  </button>
+                </form>
               </div>
             </td>
           </tr>

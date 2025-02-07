@@ -7,7 +7,6 @@ CREATE TABLE User (
                       email VARCHAR(100) NOT NULL UNIQUE,
                       phoneNumber VARCHAR(15) NOT NULL,
                       avatarUrl VARCHAR(250) NULL
-
 );
 
 SELECT * FROM User;
