@@ -3,6 +3,7 @@ package com.example.megacitycab.controllers;
 import com.example.megacitycab.daos.impl.UserDAOImpl;
 import com.example.megacitycab.daos.interfaces.UserDAO;
 import com.example.megacitycab.models.user.User;
+import com.example.megacitycab.utils.ImageUploadHandler;
 import com.example.megacitycab.utils.Validations;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,10 +11,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.annotation.MultipartConfig;
 
 import java.io.IOException;
 import java.util.List;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1MB before written to disk
+        maxFileSize = 5 * 1024 * 1024, // 5MB max file size
+        maxRequestSize = 20 * 1024 * 1024 // 20MB max request size
+)
 @WebServlet("/users/*")
 public class UserController extends HttpServlet {
     private final UserDAO userDao = new UserDAOImpl();
@@ -67,11 +74,20 @@ public class UserController extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
-        String phoneNumber = request.getParameter("phoneNumber");
-        String avatarUrl = request.getParameter("avatarUrl");
+        String phoneNumber = request.getParameter("countryCode")+request.getParameter("phoneNumber");
 
         if (!Validations.isValidEmail(email) || !Validations.isValidPhoneNumber(phoneNumber)) {
             session.setAttribute("error", "Invalid email or phone number!");
+            response.sendRedirect(request.getContextPath() + "/users/list");
+            return;
+        }
+
+        // Handle avatar image upload
+        String avatarUrl = null;
+        try {
+            avatarUrl = ImageUploadHandler.getInstance().uploadImage(request, "avatar", "users");
+        } catch (IOException | ServletException ex) {
+            session.setAttribute("error", "Failed to upload user image!");
             response.sendRedirect(request.getContextPath() + "/users/list");
             return;
         }

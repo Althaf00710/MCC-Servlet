@@ -1,5 +1,7 @@
+<%@ page import="com.example.megacitycab.models.Driver" %>
+<%@ page import="com.example.megacitycab.models.user.User" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%--
   Created by IntelliJ IDEA.
   User: Altha
@@ -67,9 +69,14 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10">
-                  <img class="h-10 w-10 rounded-full"
-                       src="${not empty user.avatarUrl ? user.avatarUrl : pageContext.request.contextPath}/views/static/images/defaultAvatar.png"
-                       alt="User avatar">
+                  <c:choose>
+                    <c:when test="${not empty user.avatarUrl}">
+                      <img class="h-10 w-10 rounded-full" src="C:/Program Files/Apache Software Foundation/Tomcat 11.0/bin/src/main/webapp/${user.avatarUrl}" alt="User avatar">
+                    </c:when>
+                    <c:otherwise>
+                      <img class="h-10 w-10 rounded-full" src="${pageContext.request.contextPath}/views/static/images/defaultAvatar.png" alt="User avatar">
+                    </c:otherwise>
+                  </c:choose>
                 </div>
                 <div class="ml-4">
                   <div class="text-sm font-medium text-gray-900">
@@ -115,10 +122,10 @@
 
 
   <!-- Add User Modal -->
-  <div id="Modal" class="hidden fixed inset-0 bg-opacity-50 overflow-y-auto h-full w-full
-                                 bg-gray-200/32 border border-gray-50/48 rounded-2xl
-                                 shadow-lg backdrop-blur-[9px]">
-    <div class="modal-animation relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-2xl bg-white">
+  <div id="Modal" class="hidden fixed inset-0 flex items-center justify-center bg-opacity-50 h-full w-full
+                               bg-gray-200/32 border border-gray-50/48 rounded-2xl
+                               shadow-lg backdrop-blur-[9px]">
+    <div class="modal-animation relative p-5 border w-1/3 shadow-lg rounded-2xl bg-white">
       <!-- Modal Header -->
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-700">Create New User</h3>
@@ -128,41 +135,94 @@
       </div>
 
       <!-- Add User Form -->
-      <form action="${pageContext.request.contextPath}/users/add" method="post">
+      <form action="${pageContext.request.contextPath}/users/add" method="post" enctype="multipart/form-data">
         <div class="space-y-4">
-          <!-- First Name -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700">First Name</label>
-            <input type="text" name="firstName" required
-                   class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-          </div>
+          <!-- Name Row -->
+          <div class="flex gap-4">
+            <!-- First Name -->
+            <div class="flex-1 relative">
+              <label class="block text-sm font-medium text-gray-700">First Name</label>
+                <input type="text" name="firstName" required
+                       class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                >
+            </div>
 
-          <!-- Last Name -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Last Name</label>
-            <input type="text" name="lastName" required
-                   class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            <!-- Last Name -->
+            <div class="flex-1 relative">
+              <label class="block text-sm font-medium text-gray-700">Last Name</label>
+                <input type="text" name="lastName" required
+                       class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                >
+            </div>
           </div>
 
           <!-- Username -->
-          <div>
+          <div class="relative">
             <label class="block text-sm font-medium text-gray-700">Username</label>
-            <input type="text" name="username" required
-                   class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            <div class="relative">
+              <i class="fi fi-rr-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="text" name="username" required
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700">Password</label>
+            <div class="relative">
+              <i class="fi fi-rr-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="text" name="password" required
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+            </div>
           </div>
 
           <!-- Email -->
-          <div>
+          <div class="relative">
             <label class="block text-sm font-medium text-gray-700">Email</label>
-            <input type="email" name="email" required
-                   class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            <div class="relative">
+              <i class="fi fi-rr-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="email" name="email" required
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+            </div>
           </div>
 
           <!-- Phone -->
-          <div>
+          <div class="relative">
             <label class="block text-sm font-medium text-gray-700">Phone</label>
-            <input type="tel" name="phoneNumber"
-                   class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            <div class="flex mt-1 rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500">
+
+              <!-- Country Code Dropdown -->
+              <select name="countryCode" class="bg-gray-100 text-gray-700 border-r border-gray-300 px-3 py-2 rounded-l-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                <option value="+94" selected>🇱🇰 +94</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+61">🇦🇺 +61</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+49">🇩🇪 +49</option>
+              </select>
+
+              <!-- Input Field -->
+              <div class="relative flex-1">
+                <i class="fi fi-rr-phone-call absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="tel" name="phoneNumber" placeholder="Enter phone number"
+                       class="block w-full px-3 py-2 pl-10 rounded-r-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700">Avatar</label>
+            <div class="relative">
+              <i class="fi fi-rr-upload absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="file" name="avatar" accept="image/*"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
           </div>
 
           <!-- Submit Button -->
@@ -176,5 +236,9 @@
       </form>
     </div>
   </div>
+
+
+
+
 </body>
 </html>
