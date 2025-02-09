@@ -5,6 +5,7 @@ import com.example.megacitycab.daos.interfaces.UserDAO;
 import com.example.megacitycab.models.user.User;
 import com.example.megacitycab.utils.ImageUploadHandler;
 import com.example.megacitycab.utils.Validations;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,7 +15,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.annotation.MultipartConfig;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024, // 1MB before written to disk
@@ -39,8 +42,18 @@ public class UserController extends HttpServlet {
             case "/edit":
                 int userId = Integer.parseInt(request.getParameter("id"));
                 User user = userDao.getUserById(userId);
-                request.setAttribute("user", user);
-                request.getRequestDispatcher("/views/sites/admin/user.jsp").forward(request, response);
+
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("id", user.getId());
+                userMap.put("firstName", user.getFirstName());
+                userMap.put("lastName", user.getLastName());
+                userMap.put("username", user.getUsername());
+                userMap.put("email", user.getEmail());
+                userMap.put("phoneNumber", user.getPhoneNumber());
+                userMap.put("avatarUrl", user.getAvatarUrl());
+
+                response.setContentType("application/json");
+                response.getWriter().write(new Gson().toJson(userMap));
                 break;
         }
     }

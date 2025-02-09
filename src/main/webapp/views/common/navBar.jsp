@@ -60,9 +60,14 @@
         <div class="flex items-center gap-3">
             <!-- Avatar -->
             <div class="flex-shrink-0">
-                <img src="${not empty user.avatarUrl ? user.avatarUrl : pageContext.request.contextPath}/views/static/images/defaultAvatar.png"
-                     alt="User Avatar"
-                     class="w-10 h-10 rounded-full">
+                <c:choose>
+                    <c:when test="${not empty user.avatarUrl}">
+                        <img class="h-10 w-10 rounded-full" src="${pageContext.request.contextPath}/${user.avatarUrl}" alt="User avatar">
+                    </c:when>
+                    <c:otherwise>
+                        <img class="h-10 w-10 rounded-full" src="${pageContext.request.contextPath}/views/static/images/defaultAvatar.png" alt="User avatar">
+                    </c:otherwise>
+                </c:choose>
             </div>
 
             <!-- Name -->

@@ -2,11 +2,12 @@ CREATE TABLE User (
                       id INT AUTO_INCREMENT PRIMARY KEY,
                       username VARCHAR(50) NOT NULL UNIQUE,
                       password VARCHAR(100) NOT NULL,
-                      firstName VARCHAR(50),
-                      lastName VARCHAR(50),
+                      firstName VARCHAR(50) NOT NULL,
+                      lastName VARCHAR(50) NOT NULL,
                       email VARCHAR(100) NOT NULL UNIQUE,
-                      phoneNumber VARCHAR(15) NOT NULL,
-                      avatarUrl VARCHAR(250) NULL
+                      phoneNumber VARCHAR(15) NOT NULL UNIQUE,
+                      avatarUrl VARCHAR(250) NULL,
+                      lastActive VARCHAR(255) NOT NULL DEFAULT 'Never'
 );
 
 SELECT * FROM User;

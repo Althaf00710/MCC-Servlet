@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class ImageUploadHandler {
-    private static final String BASE_UPLOAD_DIRECTORY = "src/main/webapp/uploads";
+    private static final String BASE_UPLOAD_DIRECTORY = "C:/Users/Altha/OneDrive/Desktop/MegaCityCab/Server/megacitycab/src/main/webapp/uploads";
 
     // Singleton instance
     private static ImageUploadHandler instance;

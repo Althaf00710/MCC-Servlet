@@ -11,4 +11,5 @@ public interface UserDAO {
     boolean deleteUser(int userId);
     List<User> getAllUsers();
     User getUserById(int userId);
+    void updateLastActive(int userId, String lastActive);
 }

@@ -30,6 +30,7 @@ public class UserDAOImpl implements UserDAO {
                         .email(rs.getString("email"))
                         .phoneNumber(rs.getString("phoneNumber"))
                         .avatarUrl(rs.getString("avatarUrl"))
+                        .lastActive(rs.getString("lastActive"))
                         .build();
             }
         } catch (SQLException ex) {
@@ -118,6 +119,7 @@ public class UserDAOImpl implements UserDAO {
                         .email(rs.getString("email"))
                         .phoneNumber(rs.getString("phoneNumber"))
                         .avatarUrl(rs.getString("avatarUrl"))
+                        .lastActive(rs.getString("lastActive"))
                         .build();
                 users.add(user);
             }
@@ -145,11 +147,27 @@ public class UserDAOImpl implements UserDAO {
                         .email(rs.getString("email"))
                         .phoneNumber(rs.getString("phoneNumber"))
                         .avatarUrl(rs.getString("avatarUrl"))
+                        .lastActive(rs.getString("lastActive"))
                         .build();
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public void updateLastActive(int userId, String lastActive) {
+        String sql = "UPDATE User SET lastActive=? WHERE id=?";
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, lastActive);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+
+            System.out.println("Updated lastActive for user to " + lastActive);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }

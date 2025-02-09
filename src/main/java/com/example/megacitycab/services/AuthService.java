@@ -10,6 +10,7 @@ public class AuthService {
     public User authenticate(String username, String rawPassword) {
         User user = userDao.getUserByUsername(username);
         if (user != null && PasswordHasher.verify(rawPassword, user.getPassword())) {
+            userDao.updateLastActive(user.getId(), "ACTIVE");
             return user; // Valid credentials
         }
         return null; // Invalid

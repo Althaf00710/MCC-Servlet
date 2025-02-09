@@ -22,6 +22,7 @@
   <script src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
   <script src="${pageContext.request.contextPath}/views/static/js/modalFunction.js"></script>
   <script src="${pageContext.request.contextPath}/views/static/js/confirmDelete.js"></script>
+  <script src="${pageContext.request.contextPath}/views/static/js/modelEditFunction.js"></script>
 </head>
 <body class="bg-gray-50">
   <%@ include file="../../common/navBar.jsp" %>
@@ -52,7 +53,7 @@
     </div>
 
     <!-- Users Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="bg-white rounded-lg shadow overflow-hidden relative">
       <table class="min-w-full divide-y divide-gray-200" id="usersTable">
         <thead class="bg-gray-200">
         <tr>
@@ -60,18 +61,43 @@
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div class="flex items-center group relative cursor-pointer">
+              Last Active
+              <i class="fi fi-rr-angle-small-down ml-1 text-gray-400 group-hover:text-gray-600 transition-colors"></i>
+              <!-- Filter Dropdown -->
+              <div class="hidden group-hover:block absolute top-full left-0 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                <div class="p-2 space-y-2">
+                  <div class="flex items-center px-2 py-1 rounded-md hover:bg-gray-100 cursor-pointer filter-option" data-filter="active">
+                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                    Active Now
+                  </div>
+                  <div class="flex items-center px-2 py-1 rounded-md hover:bg-gray-100 cursor-pointer filter-option" data-filter="inactive">
+                    <span class="w-2 h-2 rounded-full bg-red-500 mr-2"></span>
+                    Not Active
+                  </div>
+                  <div class="flex items-center px-2 py-1 rounded-md hover:bg-gray-100 cursor-pointer filter-option" data-filter="never">
+                    <span class="w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
+                    Never
+                  </div>
+                </div>
+              </div>
+            </div>
+          </th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
         <c:forEach items="${users}" var="user">
           <tr>
+
+            <!-- Avatar and Name -->
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10">
                   <c:choose>
                     <c:when test="${not empty user.avatarUrl}">
-                      <img class="h-10 w-10 rounded-full" src="C:/Program Files/Apache Software Foundation/Tomcat 11.0/bin/src/main/webapp/${user.avatarUrl}" alt="User avatar">
+                      <img class="h-10 w-10 rounded-full" src="${pageContext.request.contextPath}/${user.avatarUrl}" alt="User avatar">
                     </c:when>
                     <c:otherwise>
                       <img class="h-10 w-10 rounded-full" src="${pageContext.request.contextPath}/views/static/images/defaultAvatar.png" alt="User avatar">
@@ -85,20 +111,52 @@
                 </div>
               </div>
             </td>
+
+            <!-- Username -->
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.username}</td>
+
+            <!-- Email -->
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <a href="mailto:${user.email}" class="hover:text-gray-800">
                   ${user.email}
               </a>
             </td>
+
+            <!-- Phone Number -->
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <a href="tel:${user.phoneNumber}" class="hover:text-gray-800">
                   ${user.phoneNumber}
               </a>
             </td>
+
+            <!-- Active -->
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-status="${user.lastActive}">
+              <c:choose>
+                <c:when test="${user.lastActive == 'ACTIVE'}">
+                  <div class="flex items-center">
+                    <span class="inline-block h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                    Active Now
+                  </div>
+                </c:when>
+                <c:when test="${user.lastActive == 'Never'}">
+                  <div class="flex items-center">
+                    <span class="inline-block h-2 w-2 rounded-full bg-yellow-500 mr-2"></span>
+                    Never
+                  </div>
+                </c:when>
+                <c:otherwise>
+                  <div class="flex items-center">
+                    <span class="inline-block h-2 w-2 rounded-full bg-red-500 mr-2"></span>
+                      ${user.lastActive}
+                  </div>
+                </c:otherwise>
+              </c:choose>
+            </td>
+
+            <!-- Actions -->
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
               <div class="flex items-center space-x-3">
-                <a href="#" class="text-orange-600 hover:text-orange-900 px-3 py-1 rounded-3xl hover:bg-orange-200 flex items-center">
+                <a href="#" class="text-orange-600 hover:text-orange-900 px-3 py-1 rounded-3xl hover:bg-orange-200 flex items-center" onclick=openEditModal(${user.id})>
                   <i class="fi fi-rr-pencil mr-2"></i>
                   Edit
                 </a>
@@ -113,10 +171,20 @@
                 </form>
               </div>
             </td>
+
           </tr>
         </c:forEach>
         </tbody>
       </table>
+
+      <!-- Add empty state message -->
+      <div id="emptyState" class="hidden absolute inset-0 bg-white flex items-center justify-center">
+        <div class="text-center text-gray-500">
+          <i class="fi fi-rr-user-remove text-4xl mb-4"></i>
+          <p class="text-lg">No users found matching your criteria</p>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -238,6 +306,147 @@
   </div>
 
 
+  <!-- Edit User Modal -->
+  <div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-opacity-50 h-full w-full
+                          bg-gray-200/32 border border-gray-50/48 rounded-2xl
+                          shadow-lg backdrop-blur-[9px]">
+    <div class="modal-animation relative p-5 border w-1/3 shadow-lg rounded-2xl bg-white">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-700">Edit User</h3>
+        <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+          <i class="fi fi-rr-cross-small text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Edit User Form -->
+      <form action="${pageContext.request.contextPath}/users/update" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="${user.id}">
+
+        <!-- Image Section -->
+        <div class="mb-6">
+          <div class="flex flex-col items-center gap-4">
+            <div class="relative group">
+              <div class="h-24 w-24 rounded-full overflow-hidden border-2 border-orange-200 relative">
+                <img id="currentAvatar"
+                     class="h-full w-full object-cover"
+                     src="${not empty user.avatarUrl ? pageContext.request.contextPath.concat('/').concat(user.avatarUrl) : pageContext.request.contextPath.concat('/views/static/images/defaultAvatar.png')}"
+                     alt="Current avatar">
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <label class="cursor-pointer text-white">
+                    <i class="fi fi-rr-camera"></i>
+                    <input type="file" name="avatar" accept="image/*" class="hidden">
+                  </label>
+                </div>
+              </div>
+            </div>
+            <button type="button" onclick="document.querySelector('input[name=avatar]').click()"
+                    class="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center">
+              <i class="fi fi-rr-picture mr-2"></i>
+              Change Picture
+            </button>
+          </div>
+        </div>
+
+        <!-- User Details Form -->
+        <div class="space-y-4 border-t border-gray-200 pt-4">
+          <!-- Name Row -->
+          <div class="flex gap-4">
+            <!-- First Name -->
+            <div class="flex-1 relative">
+              <label class="block text-sm font-medium text-gray-700">First Name</label>
+              <input type="text" name="firstName" required
+                     value="${user.firstName}"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+
+            <!-- Last Name -->
+            <div class="flex-1 relative">
+              <label class="block text-sm font-medium text-gray-700">Last Name</label>
+              <input type="text" name="lastName" required
+                     value="${user.lastName}"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+          </div>
+
+          <!-- Username -->
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700">Username</label>
+            <div class="relative">
+              <i class="fi fi-rr-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="text" name="username" required
+                     value="${user.username}"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700">Password</label>
+            <div class="relative">
+              <i class="fi fi-rr-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="password" name="password"
+                     placeholder="Leave blank to keep current"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700">Email</label>
+            <div class="relative">
+              <i class="fi fi-rr-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="email" name="email" required
+                     value="${user.email}"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700">Phone</label>
+            <div class="flex mt-1 rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500">
+              <!-- Country Code Dropdown -->
+              <select name="countryCode" class="bg-gray-100 text-gray-700 border-r border-gray-300 px-3 py-2 rounded-l-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                <c:forEach items="${countryCodes}" var="code">
+                  <option value="${code.value}" ${user.countryCode == code.value ? 'selected' : ''}>
+                      ${code.flag} ${code.value}
+                  </option>
+                </c:forEach>
+              </select>
+              <!-- Input Field -->
+              <div class="relative flex-1">
+                <i class="fi fi-rr-phone-call absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="tel" name="phoneNumber"
+                       value="${user.phoneNumber}"
+                       class="block w-full px-3 py-2 pl-10 rounded-r-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-6">
+            <button type="submit"
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+              <i class="fi fi-rr-check mr-2"></i>
+              Update Profile
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Add image preview functionality
+    document.querySelector('input[name=avatar]').addEventListener('change', function(e) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        document.getElementById('currentAvatar').src = reader.result;
+      }
+      if(this.files[0]) reader.readAsDataURL(this.files[0]);
+    });
+  </script>
 
 
 </body>

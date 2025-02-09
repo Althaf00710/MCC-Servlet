@@ -9,6 +9,7 @@ public class User {
     private String email;
     private String phoneNumber;
     private String avatarUrl;
+    private String lastActive;
 
     private User(Builder builder) {
         this.id = builder.id;
@@ -19,6 +20,15 @@ public class User {
         this.email = builder.email;
         this.phoneNumber = builder.phoneNumber;
         this.avatarUrl = builder.avatarUrl;
+        this.lastActive = builder.lastActive;
+    }
+
+    public String getLastActive() {
+        return lastActive;
+    }
+
+    public void setLastActive(String lastActive) {
+        this.lastActive = lastActive;
     }
 
     public String getAvatarUrl() {
@@ -94,6 +104,7 @@ public class User {
         private String email;
         private String phoneNumber;
         private String avatarUrl;
+        private String lastActive;
 
         public Builder id(int id) {
             this.id = id;
@@ -110,7 +121,6 @@ public class User {
             return this;
         }
 
-        // Add other fields similarly
         public Builder firstName(String firstName) {
             this.firstName = firstName;
             return this;
@@ -133,6 +143,11 @@ public class User {
 
         public Builder avatarUrl(String avatarUrl) {
             this.avatarUrl = avatarUrl;
+            return this;
+        }
+
+        public Builder lastActive(String lastActive) {
+            this.lastActive = lastActive;
             return this;
         }
 
