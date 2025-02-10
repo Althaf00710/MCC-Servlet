@@ -5,6 +5,7 @@ CREATE TABLE User (
                       firstName VARCHAR(50) NOT NULL,
                       lastName VARCHAR(50) NOT NULL,
                       email VARCHAR(100) NOT NULL UNIQUE,
+                      countryCode VARCHAR(5) NOT NULL DEFAULT '+94',
                       phoneNumber VARCHAR(15) NOT NULL UNIQUE,
                       avatarUrl VARCHAR(250) NULL,
                       lastActive VARCHAR(255) NOT NULL DEFAULT 'Never'

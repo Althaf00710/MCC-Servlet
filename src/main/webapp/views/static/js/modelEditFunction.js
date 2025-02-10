@@ -1,4 +1,3 @@
-// Edit Modal Functions
 function openEditModal(userId) {
     fetch(`${window.location.origin}/megacitycab_war_exploded/users/edit?id=${userId}`)
         .then(response => response.json())
@@ -9,19 +8,14 @@ function openEditModal(userId) {
             document.querySelector('#editModal input[name=lastName]').value = user.lastName;
             document.querySelector('#editModal input[name=username]').value = user.username;
             document.querySelector('#editModal input[name=email]').value = user.email;
-
-            // Handle phone number split
-            const phoneParts = user.phoneNumber.match(/^(\+\d+)(\d+)$/);
-            if(phoneParts) {
-                document.querySelector('#editModal select[name=countryCode]').value = phoneParts[1];
-                document.querySelector('#editModal input[name=phoneNumber]').value = phoneParts[2];
-            }
-
+            document.querySelector('#editModal select[name=countryCode]').value = user.countryCode;
+            // Remove country code from the phone number and set it
+            document.querySelector('#editModal input[name=phoneNumber]').value = user.phoneNumber ? user.phoneNumber.replace(user.countryCode, '') : '';
             // Handle avatar image
             const avatarImg = document.querySelector('#editModal #currentAvatar');
             avatarImg.src = user.avatarUrl
-                ? `${window.location.origin}/${user.avatarUrl}`
-                : `${window.location.origin}/views/static/images/defaultAvatar.png`;
+                ? `${window.location.origin}/megacitycab_war_exploded/${user.avatarUrl}`
+                : `${window.location.origin}/megacitycab_war_exploded/views/static/images/defaultAvatar.png`;
 
             // Show modal
             document.getElementById('editModal').classList.remove('hidden');

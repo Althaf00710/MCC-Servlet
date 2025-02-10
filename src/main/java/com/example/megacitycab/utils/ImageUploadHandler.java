@@ -59,4 +59,27 @@ public class ImageUploadHandler {
         // Return relative path for serving through web
         return "uploads/" + folderName + "/" + newFileName;
     }
+
+    public static boolean deleteImage(String imagePath) {
+        if (imagePath == null || imagePath.trim().isEmpty()) {
+            System.out.println("Invalid image path provided for deletion.");
+            return false;
+        }
+
+        File file = new File(BASE_UPLOAD_DIRECTORY, imagePath.replace("uploads/", "")); // Get the absolute path
+
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("File deleted successfully: " + file.getAbsolutePath());
+                return true;
+            } else {
+                System.out.println("Failed to delete file: " + file.getAbsolutePath());
+                return false;
+            }
+        } else {
+            System.out.println("File not found: " + file.getAbsolutePath());
+            return false;
+        }
+    }
+
 }

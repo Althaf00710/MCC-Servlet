@@ -7,6 +7,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    private String countryCode;
     private String phoneNumber;
     private String avatarUrl;
     private String lastActive;
@@ -18,9 +19,18 @@ public class User {
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.email = builder.email;
+        this.countryCode = builder.countryCode;
         this.phoneNumber = builder.phoneNumber;
         this.avatarUrl = builder.avatarUrl;
         this.lastActive = builder.lastActive;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public String getLastActive() {
@@ -102,6 +112,7 @@ public class User {
         private String firstName;
         private String lastName;
         private String email;
+        private String countryCode;
         private String phoneNumber;
         private String avatarUrl;
         private String lastActive;
@@ -133,6 +144,11 @@ public class User {
 
         public Builder email(String email) {
             this.email = email;
+            return this;
+        }
+
+        public Builder countryCode(String countryCode) {
+            this.countryCode = countryCode;
             return this;
         }
 

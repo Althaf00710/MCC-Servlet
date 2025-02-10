@@ -2,6 +2,7 @@
 <%@ page import="com.example.megacitycab.models.user.User" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Altha
@@ -107,6 +108,9 @@
                 <div class="ml-4">
                   <div class="text-sm font-medium text-gray-900">
                       ${user.firstName} ${user.lastName}
+                        <c:if test="${sessionScope.user.id == user.id}">
+                          <span class="text-xs text-gray-500">(me)</span>
+                        </c:if>
                   </div>
                 </div>
               </div>
@@ -124,8 +128,8 @@
 
             <!-- Phone Number -->
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <a href="tel:${user.phoneNumber}" class="hover:text-gray-800">
-                  ${user.phoneNumber}
+              <a href="tel:${user.countryCode}${user.phoneNumber}" class="hover:text-gray-800">
+                  (${user.countryCode}) ${user.phoneNumber}
               </a>
             </td>
 
@@ -135,7 +139,7 @@
                 <c:when test="${user.lastActive == 'ACTIVE'}">
                   <div class="flex items-center">
                     <span class="inline-block h-2 w-2 rounded-full bg-green-500 mr-2"></span>
-                    Active Now
+                    Active
                   </div>
                 </c:when>
                 <c:when test="${user.lastActive == 'Never'}">
@@ -147,7 +151,22 @@
                 <c:otherwise>
                   <div class="flex items-center">
                     <span class="inline-block h-2 w-2 rounded-full bg-red-500 mr-2"></span>
-                      ${user.lastActive}
+                    <fmt:parseDate value="${user.lastActive}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="parsedDateTime" type="both" />
+                    <jsp:useBean id="now" class="java.util.Date" />
+                    <fmt:formatDate value="${now}" pattern="yyyy-MM-dd" var="currentDate" />
+                    <fmt:formatDate value="${parsedDateTime}" pattern="yyyy-MM-dd" var="lastActiveDate" />
+                    <fmt:formatDate value="${now}" pattern="yyyy-MM-dd" var="yesterdayDate" />
+                    <c:choose>
+                      <c:when test="${lastActiveDate == currentDate}">
+                        Today <fmt:formatDate pattern="HH:mm" value="${parsedDateTime}" />
+                      </c:when>
+                      <c:when test="${lastActiveDate == yesterdayDate}">
+                        Yesterday <fmt:formatDate pattern="HH:mm" value="${parsedDateTime}" />
+                      </c:when>
+                      <c:otherwise>
+                        <fmt:formatDate pattern="dd MMM yyyy HH:mm" value="${parsedDateTime}" />
+                      </c:otherwise>
+                    </c:choose>
                   </div>
                 </c:otherwise>
               </c:choose>
@@ -176,15 +195,6 @@
         </c:forEach>
         </tbody>
       </table>
-
-      <!-- Add empty state message -->
-      <div id="emptyState" class="hidden absolute inset-0 bg-white flex items-center justify-center">
-        <div class="text-center text-gray-500">
-          <i class="fi fi-rr-user-remove text-4xl mb-4"></i>
-          <p class="text-lg">No users found matching your criteria</p>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -385,7 +395,7 @@
             <label class="block text-sm font-medium text-gray-700">Password</label>
             <div class="relative">
               <i class="fi fi-rr-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              <input type="password" name="password"
+              <input type="text" name="password"
                      placeholder="Leave blank to keep current"
                      class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
             </div>
@@ -408,17 +418,20 @@
             <div class="flex mt-1 rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500">
               <!-- Country Code Dropdown -->
               <select name="countryCode" class="bg-gray-100 text-gray-700 border-r border-gray-300 px-3 py-2 rounded-l-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                <c:forEach items="${countryCodes}" var="code">
-                  <option value="${code.value}" ${user.countryCode == code.value ? 'selected' : ''}>
-                      ${code.flag} ${code.value}
-                  </option>
-                </c:forEach>
+                <option value="+94" ${user.countryCode == "+94" ? 'selected' : ''}>🇱🇰 +94</option>
+                <option value="+1" ${user.countryCode == "+1" ? 'selected' : ''}>🇺🇸 +1</option>
+                <option value="+44" ${user.countryCode == "+44" ? 'selected' : ''}>🇬🇧 +44</option>
+                <option value="+91" ${user.countryCode == "+91" ? 'selected' : ''}>🇮🇳 +91</option>
+                <option value="+61" ${user.countryCode == "+61" ? 'selected' : ''}>🇦🇺 +61</option>
+                <option value="+971" ${user.countryCode == "+971" ? 'selected' : ''}>🇦🇪 +971</option>
+                <option value="+33" ${user.countryCode == "+33" ? 'selected' : ''}>🇫🇷 +33</option>
+                <option value="+49" ${user.countryCode == "+49" ? 'selected' : ''}>🇩🇪 +49</option>
               </select>
               <!-- Input Field -->
               <div class="relative flex-1">
                 <i class="fi fi-rr-phone-call absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                <input type="tel" name="phoneNumber"
-                       value="${user.phoneNumber}"
+                <input type="tel" name="phoneNumber" placeholder="Enter phone number"
+                       value="${user.phoneNumber != null ? user.phoneNumber.replace(user.countryCode, '') : ''}"
                        class="block w-full px-3 py-2 pl-10 rounded-r-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
               </div>
             </div>

@@ -12,4 +12,6 @@ public interface UserDAO {
     List<User> getAllUsers();
     User getUserById(int userId);
     void updateLastActive(int userId, String lastActive);
+    boolean updateAvatarUrl(User user);
+    boolean isUsernameTaken(String username);
 }

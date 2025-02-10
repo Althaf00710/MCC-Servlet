@@ -49,6 +49,7 @@ public class UserController extends HttpServlet {
                 userMap.put("lastName", user.getLastName());
                 userMap.put("username", user.getUsername());
                 userMap.put("email", user.getEmail());
+                userMap.put("countryCode", user.getCountryCode());
                 userMap.put("phoneNumber", user.getPhoneNumber());
                 userMap.put("avatarUrl", user.getAvatarUrl());
 
@@ -87,9 +88,10 @@ public class UserController extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
-        String phoneNumber = request.getParameter("countryCode")+request.getParameter("phoneNumber");
+        String countryCode = request.getParameter("countryCode");
+        String phoneNumber = request.getParameter("phoneNumber");
 
-        if (!Validations.isValidEmail(email) || !Validations.isValidPhoneNumber(phoneNumber)) {
+        if (!Validations.isValidEmail(email) || !Validations.isValidPhoneNumber(countryCode, phoneNumber)) {
             session.setAttribute("error", "Invalid email or phone number!");
             response.sendRedirect(request.getContextPath() + "/users/list");
             return;
@@ -112,6 +114,7 @@ public class UserController extends HttpServlet {
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
+                .countryCode(countryCode)
                 .phoneNumber(phoneNumber)
                 .avatarUrl(avatarUrl)
                 .build();
@@ -144,6 +147,8 @@ public class UserController extends HttpServlet {
                 .firstName(request.getParameter("firstName"))
                 .lastName(request.getParameter("lastName"))
                 .email(request.getParameter("email"))
+                .password(request.getParameter("password"))
+                .countryCode(request.getParameter("countryCode"))
                 .phoneNumber(request.getParameter("phoneNumber"))
                 .avatarUrl(request.getParameter("avatarUrl"))
                 .build();

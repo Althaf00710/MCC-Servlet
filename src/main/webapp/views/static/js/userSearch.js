@@ -1,51 +1,59 @@
-let currentFilter = null;
-
-document.addEventListener('click', function(e) {
-    const filterOption = e.target.closest('.filter-option');
-    if (filterOption) {
-        currentFilter = currentFilter === filterOption.dataset.filter ? null : filterOption.dataset.filter;
-        filterUsers();
-        document.querySelectorAll('.filter-option').forEach(opt =>
-            opt.classList.remove('bg-orange-100'));
-        if (currentFilter) filterOption.classList.add('bg-orange-100');
-    }
-});
+let currentFilter = 'all';
 
 function filterUsers() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('#usersTable tbody tr');
-    let hasVisibleRows = false;
+    const searchInput = document.getElementById('searchInput');
+    const filter = searchInput.value.toLowerCase();
+    const table = document.getElementById('usersTable');
+    const tr = table.getElementsByTagName('tr');
+    let visibleCount = 0;
 
-    const emptyState = document.getElementById('emptyState');
-    emptyState.classList.toggle('hidden', hasVisibleRows);
+    for (let i = 1; i < tr.length; i++) {
+        const nameCell = tr[i].getElementsByTagName('td')[0];
+        const usernameCell = tr[i].getElementsByTagName('td')[1];
+        const emailCell = tr[i].getElementsByTagName('td')[2];
+        const phoneCell = tr[i].getElementsByTagName('td')[3];
+        const statusCell = tr[i].getElementsByTagName('td')[4];
 
-    rows.forEach(row => {
-        const name = row.cells[0].textContent.toLowerCase();
-        const username = row.cells[1].textContent.toLowerCase();
-        const email = row.cells[2].textContent.toLowerCase();
-        const status = row.cells[4].dataset.status;
+        if (nameCell && usernameCell && emailCell && phoneCell) {
+            const name = nameCell.textContent || nameCell.innerText;
+            const username = usernameCell.textContent || usernameCell.innerText;
+            const email = emailCell.textContent || emailCell.innerText;
+            const phone = phoneCell.textContent || phoneCell.innerText;
+            const status = statusCell.getAttribute('data-status');
 
-        const matchesSearch = name.includes(search) ||
-            username.includes(search) ||
-            email.includes(search);
+            const matchesSearch = name.toLowerCase().includes(filter) ||
+                username.toLowerCase().includes(filter) ||
+                email.toLowerCase().includes(filter) ||
+                phone.toLowerCase().includes(filter);
 
-        let matchesFilter = true;
-        if(currentFilter) {
-            switch(currentFilter) {
-                case 'active': matchesFilter = status === 'ACTIVE'; break;
-                case 'inactive': matchesFilter = status !== 'ACTIVE' && status !== 'NEVER'; break;
-                case 'never': matchesFilter = status === 'NEVER'; break;
+            const matchesFilter = currentFilter === 'all' ||
+                (currentFilter === 'active' && status === 'ACTIVE') ||
+                (currentFilter === 'inactive' && status !== 'ACTIVE' && status !== 'Never') ||
+                (currentFilter === 'never' && status === 'Never');
+
+            if (matchesSearch && matchesFilter) {
+                tr[i].style.display = '';
+                visibleCount++;
+            } else {
+                tr[i].style.display = 'none';
             }
         }
+    }
 
-        const shouldShow = matchesSearch && matchesFilter;
-        row.style.display = shouldShow ? '' : 'none';
-        if(shouldShow) hasVisibleRows = true;
-    });
-
-    // Show/hide table header container based on results
-    const tableHeader = document.querySelector('#usersTable thead');
-    const tableContainer = document.querySelector('#usersTable');
-    tableHeader.style.visibility = hasVisibleRows ? 'visible' : 'visible'; // Always visible
-    tableContainer.style.minHeight = hasVisibleRows ? 'auto' : '200px'; // Maintain minimum height
+    // Show/hide empty state
+    const emptyState = document.getElementById('emptyState');
+    emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
 }
+
+// Event listeners for filter options
+document.querySelectorAll('.filter-option').forEach(option => {
+    option.addEventListener('click', function() {
+        currentFilter = this.getAttribute('data-filter');
+        filterUsers();
+    });
+});
+
+// Initialize search on page load
+document.addEventListener('DOMContentLoaded', () => {
+    filterUsers();
+});
