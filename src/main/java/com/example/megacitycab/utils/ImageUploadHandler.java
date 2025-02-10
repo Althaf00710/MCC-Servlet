@@ -62,8 +62,7 @@ public class ImageUploadHandler {
 
     public static boolean deleteImage(String imagePath) {
         if (imagePath == null || imagePath.trim().isEmpty()) {
-            System.out.println("Invalid image path provided for deletion.");
-            return false;
+            return true;
         }
 
         File file = new File(BASE_UPLOAD_DIRECTORY, imagePath.replace("uploads/", "")); // Get the absolute path

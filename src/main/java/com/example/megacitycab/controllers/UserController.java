@@ -75,6 +75,9 @@ public class UserController extends HttpServlet {
             case "/delete":
                 deleteUser(request, response, session);
                 break;
+            case "/updateImage":
+                updateImage(request, response, session);
+                break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -172,6 +175,44 @@ public class UserController extends HttpServlet {
         } else {
             session.setAttribute("error", "Failed to delete user!");
         }
+        response.sendRedirect(request.getContextPath() + "/users/list");
+    }
+
+    private void updateImage(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws IOException, ServletException {
+        int userId = Integer.parseInt(request.getParameter("id"));
+        User user = userDao.getUserById(userId);
+
+        if (user == null) {
+            session.setAttribute("error", "User not found!");
+            response.sendRedirect(request.getContextPath() + "/users/list");
+            return;
+        }
+
+        // Handle avatar image upload
+        String avatarUrl = null;
+        try {
+            avatarUrl = ImageUploadHandler.getInstance().uploadImage(request, "avatar", "users");
+
+            if (avatarUrl != null && !avatarUrl.equals(user.getAvatarUrl())) {
+                System.out.println(user.getAvatarUrl());
+                ImageUploadHandler.getInstance().deleteImage(user.getAvatarUrl());
+            }
+        } catch (IOException | ServletException ex) {
+            session.setAttribute("error", "Failed to upload user image!");
+            response.sendRedirect(request.getContextPath() + "/users/list");
+            return;
+        }
+
+        // Update the avatar URL
+        user.setAvatarUrl(avatarUrl);
+        boolean success = userDao.updateAvatarUrl(user);
+        if (success) {
+            session.setAttribute("success", "Avatar updated successfully!");
+        } else {
+            session.setAttribute("error", "Failed to update avatar!");
+        }
+
         response.sendRedirect(request.getContextPath() + "/users/list");
     }
 }

@@ -330,7 +330,8 @@
       </div>
 
       <!-- Edit User Form -->
-      <form action="${pageContext.request.contextPath}/users/update" method="post" enctype="multipart/form-data">
+      <!-- Edit User Form -->
+      <form action="${pageContext.request.contextPath}/users/updateImage" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="${user.id}">
 
         <!-- Image Section -->
@@ -358,6 +359,18 @@
           </div>
         </div>
 
+        <!-- Submit Button to update image -->
+        <div class="pt-6">
+          <button type="submit"
+                  class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+            <i class="fi fi-rr-check mr-2"></i>
+            Update Profile
+          </button>
+        </div>
+      </form>
+
+
+      <form action="${pageContext.request.contextPath}/users/update" method="post" enctype="multipart/form-data">
         <!-- User Details Form -->
         <div class="space-y-4 border-t border-gray-200 pt-4">
           <!-- Name Row -->

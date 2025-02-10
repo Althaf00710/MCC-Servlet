@@ -35,3 +35,55 @@ document.querySelector('#editModal input[name=avatar]').addEventListener('change
     }
     if(this.files[0]) reader.readAsDataURL(this.files[0]);
 });
+
+// Image Upload Handling
+const avatarInput = document.getElementById('avatarInput');
+const submitImageBtn = document.getElementById('submitImageBtn');
+
+// When file is selected
+avatarInput.addEventListener('change', function(e) {
+    if (this.files && this.files[0]) {
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('currentAvatar').src = e.target.result;
+        }
+        reader.readAsDataURL(this.files[0]);
+
+        // Show submit button
+        submitImageBtn.classList.remove('hidden');
+    }
+});
+
+// When submit button is clicked
+submitImageBtn.addEventListener('click', function() {
+    const formData = new FormData();
+    const userId = document.querySelector('#editModal input[name=id]').value;
+
+    formData.append('id', userId);
+    formData.append('avatar', avatarInput.files[0]);
+
+    fetch('${pageContext.request.contextPath}/users/updateImage', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update avatar URL permanently
+                document.getElementById('currentAvatar').src =
+                    '${pageContext.request.contextPath}/' + data.avatarUrl;
+                // Reset input and hide button
+                avatarInput.value = '';
+                submitImageBtn.classList.add('hidden');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('editModal');
+    if (event.target === modal) {
+        closeEditModal();
+    }
+}
