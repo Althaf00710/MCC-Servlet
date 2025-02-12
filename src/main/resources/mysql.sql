@@ -11,8 +11,6 @@ CREATE TABLE User (
                       lastActive VARCHAR(255) NOT NULL DEFAULT 'Never'
 );
 
-SELECT * FROM User;
-
 CREATE TABLE Customer (
                           id INT AUTO_INCREMENT PRIMARY KEY,
                           registerNumber VARCHAR(50),
@@ -30,8 +28,11 @@ CREATE TABLE Driver (
                         licenceNumber VARCHAR(50),
                         phoneNumber VARCHAR(15),
                         email VARCHAR(100),
-                        avatarUrl TEXT
+                        avatarUrl TEXT,
+                        status VARCHAR(20) NOT NULL DEFAULT 'Never'
 );
+
+SELECT * FROM driver;
 
 CREATE TABLE CabBrand (
                           id INT AUTO_INCREMENT PRIMARY KEY,

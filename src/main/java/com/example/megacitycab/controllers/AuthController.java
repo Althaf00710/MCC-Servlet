@@ -32,6 +32,7 @@ public class AuthController extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
+            session.setMaxInactiveInterval(36000);
             response.sendRedirect(request.getContextPath() + "/views/sites/admin/dashboard.jsp");
         } else {
             request.setAttribute("error", "Invalid credentials!");

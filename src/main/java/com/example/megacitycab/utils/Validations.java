@@ -30,7 +30,7 @@ public class Validations {
                 "+61", 9,  // Australia
                 "+971", 9, // UAE
                 "+33", 9,  // France
-                "+49", 10  // Germany (can be 11 in some cases)
+                "+49", 10  // Germany
         );
 
         return validLengths.getOrDefault(countryCode, 10) == length;

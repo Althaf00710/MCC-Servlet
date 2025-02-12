@@ -26,7 +26,7 @@
   <script src="${pageContext.request.contextPath}/views/static/js/modelEditFunction.js"></script>
 </head>
 <body class="bg-gray-50">
-  <%@ include file="../../common/navBar.jsp" %>
+  <%@ include file="common/navBar.jsp" %>
   <div class="mouse-circle"></div>
   <div class="ml-64 flex-1 p-8 pt-4">
     <!-- Header Section -->
@@ -329,7 +329,6 @@
         </button>
       </div>
 
-      <!-- Edit User Form -->
       <!-- Edit User Form -->
       <form action="${pageContext.request.contextPath}/users/updateImage" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="${user.id}">

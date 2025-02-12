@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
     </head>
     <body>
-        <%@ include file="../../common/navBar.jsp" %>
+        <%@ include file="common/navBar.jsp" %>
 
     </body>
     <script src="../../static/js/mouseAnimation.js"></script>
