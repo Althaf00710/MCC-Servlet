@@ -1,5 +1,6 @@
 package com.example.megacitycab.controllers;
 
+import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.impl.UserDAOImpl;
 import com.example.megacitycab.daos.interfaces.UserDAO;
 import com.example.megacitycab.models.user.User;
@@ -26,7 +27,7 @@ import java.util.Map;
 )
 @WebServlet("/users/*")
 public class UserController extends HttpServlet {
-    private final UserDAO userDao = new UserDAOImpl();
+    private final UserDAO userDao = DAOFactory.getUserDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

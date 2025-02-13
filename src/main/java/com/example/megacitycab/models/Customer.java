@@ -8,60 +8,85 @@ public class Customer {
     private String phoneNumber;
     private String email;
     private String nicNumber;
+    private String avatarUrl;
+    private String joinedDate;
 
-    public int getId() {
-        return id;
+    // Private constructor to enforce the use of Builder
+    private Customer(CustomerBuilder builder) {
+        this.id = builder.id;
+        this.registerNumber = builder.registerNumber;
+        this.name = builder.name;
+        this.address = builder.address;
+        this.phoneNumber = builder.phoneNumber;
+        this.email = builder.email;
+        this.nicNumber = builder.nicNumber;
+        this.avatarUrl = builder.avatarUrl;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    // Getters
+    public int getId() { return id; }
+    public String getRegisterNumber() { return registerNumber; }
+    public String getName() { return name; }
+    public String getAddress() { return address; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public String getEmail() { return email; }
+    public String getNicNumber() { return nicNumber; }
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setRegisterNumber(String registerNumber) { this.registerNumber = registerNumber; }
 
-    public String getRegisterNumber() {
-        return registerNumber;
-    }
+    // Builder Class
+    public static class CustomerBuilder {
+        private int id;
+        private String registerNumber;
+        private String name;
+        private String address;
+        private String phoneNumber;
+        private String email;
+        private String nicNumber;
+        private String avatarUrl;
 
-    public void setRegisterNumber(String registerNumber) {
-        this.registerNumber = registerNumber;
-    }
+        public CustomerBuilder setId(int id) {
+            this.id = id;
+            return this;
+        }
 
-    public String getName() {
-        return name;
-    }
+        public CustomerBuilder setRegisterNumber(String registerNumber) {
+            this.registerNumber = registerNumber;
+            return this;
+        }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+        public CustomerBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
 
-    public String getAddress() {
-        return address;
-    }
+        public CustomerBuilder setAddress(String address) {
+            this.address = address;
+            return this;
+        }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+        public CustomerBuilder setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+        public CustomerBuilder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+        public CustomerBuilder setNicNumber(String nicNumber) {
+            this.nicNumber = nicNumber;
+            return this;
+        }
 
-    public String getEmail() {
-        return email;
-    }
+        public CustomerBuilder setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
+            return this;
+        }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getNicNumber() {
-        return nicNumber;
-    }
-
-    public void setNicNumber(String nicNumber) {
-        this.nicNumber = nicNumber;
+        public Customer build() {
+            return new Customer(this);
+        }
     }
 }

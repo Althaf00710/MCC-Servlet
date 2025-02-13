@@ -1,5 +1,6 @@
 package com.example.megacitycab.controllers;
 
+import com.example.megacitycab.daos.DAOFactory;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 
@@ -29,7 +30,7 @@ import java.util.Map;
 
 @WebServlet("/drivers/*")
 public class DriverController extends HttpServlet {
-    private final DriverDAO driverDao = new DriverDAOImpl();
+    private final DriverDAO driverDao = DAOFactory.getDriverDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,30 +39,13 @@ public class DriverController extends HttpServlet {
         if (action == null) action = "/list";
         switch (action) {
             case "/list":
-                List<Driver> drivers = driverDao.getAllDrivers();
-                request.setAttribute("drivers", drivers);
-                request.getRequestDispatcher("/views/sites/admin/drivers.jsp").forward(request, response);
+                listDrivers(request, response);
                 break;
             case "/search":
-                List<Driver> searchedDrivers = driverDao.getDriversBySearch(request.getParameter("searchTerm"));
-                request.setAttribute("drivers", searchedDrivers);
-                request.getRequestDispatcher("/views/sites/admin/drivers.jsp").forward(request, response);
+                searchDrivers(request, response);
                 break;
             case "/edit":
-                int driverId = Integer.parseInt(request.getParameter("id"));
-                Driver driver = driverDao.getDriverById(driverId);
-
-                Map<String, Object> driverMap = new HashMap<>();
-                driverMap.put("id", driver.getId());
-                driverMap.put("name", driver.getName());
-                driverMap.put("nicNumber", driver.getNicNumber());
-                driverMap.put("licenceNumber", driver.getLicenceNumber());
-                driverMap.put("phoneNumber", driver.getPhoneNumber());
-                driverMap.put("email", driver.getEmail());
-                driverMap.put("avatarUrl", driver.getAvatarUrl());
-
-                response.setContentType("application/json");
-                response.getWriter().write(new Gson().toJson(driverMap));
+                editDriver(request, response);
                 break;
         }
     }
@@ -91,6 +75,39 @@ public class DriverController extends HttpServlet {
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+    private void listDrivers(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<Driver> drivers = driverDao.getAllDrivers();
+        request.setAttribute("drivers", drivers);
+        request.getRequestDispatcher("/views/sites/admin/drivers.jsp").forward(request, response);
+    }
+
+    private void searchDrivers(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String searchTerm = request.getParameter("searchTerm");
+        List<Driver> searchedDrivers = driverDao.getDriversBySearch(searchTerm);
+        request.setAttribute("drivers", searchedDrivers);
+        request.getRequestDispatcher("/views/sites/admin/drivers.jsp").forward(request, response);
+    }
+
+    private void editDriver(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int driverId = Integer.parseInt(request.getParameter("id"));
+        Driver driver = driverDao.getDriverById(driverId);
+
+        Map<String, Object> driverMap = new HashMap<>();
+        driverMap.put("id", driver.getId());
+        driverMap.put("name", driver.getName());
+        driverMap.put("nicNumber", driver.getNicNumber());
+        driverMap.put("licenceNumber", driver.getLicenceNumber());
+        driverMap.put("phoneNumber", driver.getPhoneNumber());
+        driverMap.put("email", driver.getEmail());
+        driverMap.put("avatarUrl", driver.getAvatarUrl());
+
+        response.setContentType("application/json");
+        response.getWriter().write(new Gson().toJson(driverMap));
     }
 
     private void addDriver(HttpServletRequest request, HttpServletResponse response, HttpSession session)
