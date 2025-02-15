@@ -16,10 +16,14 @@ CREATE TABLE Customer (
                           registerNumber VARCHAR(50),
                           name VARCHAR(100),
                           address TEXT,
+                          countryCode VARCHAR(5),
                           phoneNumber VARCHAR(15),
                           email VARCHAR(100),
-                          nicNumber VARCHAR(20)
+                          nicNumber VARCHAR(20),
+                          joinedDate VARCHAR(50)
 );
+
+SELECT * FROM customer;
 
 CREATE TABLE Driver (
                         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,6 +51,8 @@ CREATE TABLE CabType (
                          baseFare DOUBLE NOT NULL,
                          baseWaitTimeFare DOUBLE NOT NULL
 );
+
+SELECT * FROM cabtype;
 
 CREATE TABLE Cab (
                      id INT AUTO_INCREMENT PRIMARY KEY,

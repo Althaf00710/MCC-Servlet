@@ -5,10 +5,10 @@ public class Customer {
     private String registerNumber;
     private String name;
     private String address;
+    private String countryCode;
     private String phoneNumber;
     private String email;
     private String nicNumber;
-    private String avatarUrl;
     private String joinedDate;
 
     // Private constructor to enforce the use of Builder
@@ -17,10 +17,11 @@ public class Customer {
         this.registerNumber = builder.registerNumber;
         this.name = builder.name;
         this.address = builder.address;
+        this.countryCode = builder.countryCode;
         this.phoneNumber = builder.phoneNumber;
         this.email = builder.email;
         this.nicNumber = builder.nicNumber;
-        this.avatarUrl = builder.avatarUrl;
+        this.joinedDate = builder.joinedDate;
     }
 
     // Getters
@@ -31,7 +32,8 @@ public class Customer {
     public String getPhoneNumber() { return phoneNumber; }
     public String getEmail() { return email; }
     public String getNicNumber() { return nicNumber; }
-    public String getAvatarUrl() { return avatarUrl; }
+    public String getJoinedDate() { return joinedDate; }
+    public String getCountryCode() { return countryCode; }
     public void setRegisterNumber(String registerNumber) { this.registerNumber = registerNumber; }
 
     // Builder Class
@@ -40,10 +42,11 @@ public class Customer {
         private String registerNumber;
         private String name;
         private String address;
+        private String countryCode;
         private String phoneNumber;
         private String email;
         private String nicNumber;
-        private String avatarUrl;
+        private String joinedDate;
 
         public CustomerBuilder setId(int id) {
             this.id = id;
@@ -65,6 +68,11 @@ public class Customer {
             return this;
         }
 
+        public CustomerBuilder setCountryCode(String countryCode) {
+            this.countryCode = countryCode;
+            return this;
+        }
+
         public CustomerBuilder setPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
             return this;
@@ -80,8 +88,8 @@ public class Customer {
             return this;
         }
 
-        public CustomerBuilder setAvatarUrl(String avatarUrl) {
-            this.avatarUrl = avatarUrl;
+        public CustomerBuilder setJoinedDate(String joinedDate) {
+            this.joinedDate = joinedDate;
             return this;
         }
 

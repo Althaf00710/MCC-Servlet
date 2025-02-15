@@ -16,6 +16,7 @@
   <title>MCC | Driver</title>
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/mouseAnimation.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/scrollBar.css">
   <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
   <script src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
   <script src="${pageContext.request.contextPath}/views/static/js/confirmDelete.js"></script>

@@ -73,7 +73,7 @@ public class CustomerController extends HttpServlet {
             throws ServletException, IOException {
         List<Customer> customers = customerDao.getAll();
         request.setAttribute("customers", customers);
-        request.getRequestDispatcher("/views/sites/admin/customers.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/sites/admin/customer/customers.jsp").forward(request, response);
     }
 
     private void searchCustomers(HttpServletRequest request, HttpServletResponse response)
@@ -81,7 +81,7 @@ public class CustomerController extends HttpServlet {
         String searchTerm = request.getParameter("searchTerm");
         List<Customer> searchedCustomers = customerDao.search(searchTerm);
         request.setAttribute("customers", searchedCustomers);
-        request.getRequestDispatcher("/views/sites/admin/customers.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/sites/admin/customer/customers.jsp").forward(request, response);
     }
 
     private void editCustomer(HttpServletRequest request, HttpServletResponse response)
@@ -93,8 +93,10 @@ public class CustomerController extends HttpServlet {
         customerMap.put("id", customer.getId());
         customerMap.put("name", customer.getName());
         customerMap.put("email", customer.getEmail());
+        customerMap.put("address", customer.getAddress());
+        customerMap.put("countryCode", customer.getCountryCode());
         customerMap.put("phoneNumber", customer.getPhoneNumber());
-        customerMap.put("avatarUrl", customer.getAvatarUrl());
+        customerMap.put("nicNumber", customer.getNicNumber());
 
         response.setContentType("application/json");
         response.getWriter().write(new Gson().toJson(customerMap));
@@ -104,9 +106,10 @@ public class CustomerController extends HttpServlet {
             throws IOException, ServletException {
         String nicNumber = request.getParameter("nicNumber");
         String email = request.getParameter("email");
+        String countryCode = request.getParameter("countryCode");
         String phoneNumber = request.getParameter("phoneNumber");
 
-        Map<String, Boolean> existsMap = customerDao.checkCustomerExists(email, nicNumber, phoneNumber);
+        Map<String, Boolean> existsMap = customerDao.checkCustomerExists(email, nicNumber, countryCode, phoneNumber);
 
         if (existsMap.get("email") || existsMap.get("nicNumber") || existsMap.get("phoneNumber")) {
             session.setAttribute("error", "Customer already exists! " + existsMap);
@@ -120,23 +123,14 @@ public class CustomerController extends HttpServlet {
             return;
         }
 
-        String avatarUrl = null;
-        try {
-            avatarUrl = ImageUploadHandler.getInstance().uploadImage(request, "avatar", "customers");
-        } catch (Exception ex) {
-            session.setAttribute("error", "Failed to upload customer image!");
-            response.sendRedirect(request.getContextPath() + "/customers/list");
-            return;
-        }
-
         Customer customer = new Customer.CustomerBuilder()
                 .setName(request.getParameter("name"))
                 .setEmail(request.getParameter("email"))
+                .setCountryCode(request.getParameter("countryCode"))
                 .setPhoneNumber(request.getParameter("phoneNumber"))
                 .setRegisterNumber(request.getParameter("registerNumber"))
                 .setAddress(request.getParameter("address"))
                 .setNicNumber(request.getParameter("nicNumber"))
-                .setAvatarUrl(avatarUrl)
                 .build();
 
         boolean success = customerDao.add(customer);
@@ -159,11 +153,11 @@ public class CustomerController extends HttpServlet {
                 .setId(customerId)
                 .setName(request.getParameter("name"))
                 .setEmail(request.getParameter("email"))
+                .setCountryCode(request.getParameter("countryCode"))
                 .setPhoneNumber(request.getParameter("phoneNumber"))
                 .setRegisterNumber(request.getParameter("registerNumber"))
                 .setAddress(request.getParameter("address"))
                 .setNicNumber(request.getParameter("nicNumber"))
-                .setAvatarUrl(existingCustomer.getAvatarUrl())
                 .build();
 
         boolean success = customerDao.update(updatedCustomer);

@@ -1,4 +1,8 @@
 package com.example.megacitycab.daos.interfaces.cab;
 
-public interface CabTypeDAO {
+import com.example.megacitycab.daos.GenericDAO;
+import com.example.megacitycab.models.Cab.CabType;
+
+public interface CabTypeDAO extends GenericDAO<CabType> {
+    boolean checkExist(String name);
 }

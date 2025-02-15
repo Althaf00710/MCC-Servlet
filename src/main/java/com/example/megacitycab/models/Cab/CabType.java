@@ -1,58 +1,69 @@
 package com.example.megacitycab.models.Cab;
 
 public class CabType {
-    private int id;
-    private String typeName;
-    private String description;
-    private int capacity;
-    private double baseFare;
-    private double baseWaitTimeFare;
+    private final int id;
+    private final String typeName;
+    private final String description;
+    private final int capacity;
+    private final double baseFare;
+    private final double baseWaitTimeFare;
 
-    public double getBaseWaitFare() {
-        return baseWaitTimeFare;
+    private CabType(CabTypeBuilder builder) {
+        this.id = builder.id;
+        this.typeName = builder.typeName;
+        this.description = builder.description;
+        this.capacity = builder.capacity;
+        this.baseFare = builder.baseFare;
+        this.baseWaitTimeFare = builder.baseWaitTimeFare;
     }
 
-    public void setBaseWaitFare(double baseWaitTimeFare) {
-        this.baseWaitTimeFare = baseWaitTimeFare;
-    }
+    public int getId() { return id; }
+    public String getTypeName() { return typeName; }
+    public String getDescription() { return description; }
+    public int getCapacity() { return capacity; }
+    public double getBaseFare() { return baseFare; }
+    public double getBaseWaitTimeFare() { return baseWaitTimeFare; }
 
-    public int getId() {
-        return id;
-    }
+    public static class CabTypeBuilder {
+        private int id;
+        private String typeName;
+        private String description;
+        private int capacity;
+        private double baseFare;
+        private double baseWaitTimeFare;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+        public CabTypeBuilder setId(int id) {
+            this.id = id;
+            return this;
+        }
 
-    public String getTypeName() {
-        return typeName;
-    }
+        public CabTypeBuilder setTypeName(String typeName) {
+            this.typeName = typeName;
+            return this;
+        }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
+        public CabTypeBuilder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
 
-    public String getDescription() {
-        return description;
-    }
+        public CabTypeBuilder setCapacity(int capacity) {
+            this.capacity = capacity;
+            return this;
+        }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+        public CabTypeBuilder setBaseFare(double baseFare) {
+            this.baseFare = baseFare;
+            return this;
+        }
 
-    public int getCapacity() {
-        return capacity;
-    }
+        public CabTypeBuilder setBaseWaitTimeFare(double baseWaitTimeFare) {
+            this.baseWaitTimeFare = baseWaitTimeFare;
+            return this;
+        }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public double getBaseFare() {
-        return baseFare;
-    }
-
-    public void setBaseFare(double baseFare) {
-        this.baseFare = baseFare;
+        public CabType build() {
+            return new CabType(this);
+        }
     }
 }

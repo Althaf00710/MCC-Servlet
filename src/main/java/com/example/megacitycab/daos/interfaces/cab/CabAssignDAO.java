@@ -1,4 +1,7 @@
 package com.example.megacitycab.daos.interfaces.cab;
 
-public interface CabAssignDAO {
+import com.example.megacitycab.daos.GenericDAO;
+import com.example.megacitycab.models.Cab.CabAssign;
+
+public interface CabAssignDAO extends GenericDAO<CabAssign> {
 }

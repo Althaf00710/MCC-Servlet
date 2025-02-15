@@ -7,6 +7,8 @@ import com.example.megacitycab.utils.DbConfig;
 import com.example.megacitycab.utils.NumberGenerator;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,17 +29,18 @@ public class CustomerDAOImpl extends BaseDAOImpl<Customer> implements CustomerDA
                 .setRegisterNumber(rs.getString("registerNumber"))
                 .setName(rs.getString("name"))
                 .setAddress(rs.getString("address"))
+                .setCountryCode(rs.getString("countryCode"))
                 .setPhoneNumber(rs.getString("phoneNumber"))
                 .setEmail(rs.getString("email"))
                 .setNicNumber(rs.getString("nicNumber"))
-                .setAvatarUrl(rs.getString("avatarUrl"))
+                .setJoinedDate(rs.getString("joinedDate"))
                 .build();
     }
 
-    private static final String INSERT_CUSTOMER_SQL = "INSERT INTO "+ TABLE_NAME + " (name, registerNumber, address, phoneNumber, email, nicNumber, avatarUrl) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_CUSTOMER_SQL = "UPDATE "+ TABLE_NAME +" SET name = ?, registerNumber = ?, address = ?, phoneNumber = ?, email = ?, nicNumber = ? WHERE id = ?";
-    private static final String SEARCH_CUSTOMER_SQL = "SELECT * FROM "+ TABLE_NAME +" WHERE name LIKE ? OR registerNumber LIKE ? OR phoneNumber LIKE ? OR email LIKE ?";
-    private static final String CHECK_CUSTOMER_SQL = "SELECT email, nicNumber, phoneNumber FROM customer WHERE email = ? OR nicNumber = ? OR phoneNumber = ?";
+    private static final String INSERT_CUSTOMER_SQL = "INSERT INTO "+ TABLE_NAME + " (name, registerNumber, address, countryCode, phoneNumber, email, nicNumber, joinedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_CUSTOMER_SQL = "UPDATE "+ TABLE_NAME +" SET name = ?, address = ?, countryCode = ?,phoneNumber = ?, email = ?, nicNumber = ? WHERE id = ?";
+    private static final String SEARCH_CUSTOMER_SQL = "SELECT * FROM "+ TABLE_NAME +" WHERE name LIKE ? OR registerNumber LIKE ? OR (countryCode = ? AND phoneNumber LIKE ?) OR email LIKE ?";
+    private static final String CHECK_CUSTOMER_SQL = "SELECT email, nicNumber, phoneNumber FROM customer WHERE email = ? OR nicNumber = ? OR (countryCode = ? AND phoneNumber LIKE ?)";
 
     @Override
     public boolean add(Customer customer) {
@@ -51,10 +54,11 @@ public class CustomerDAOImpl extends BaseDAOImpl<Customer> implements CustomerDA
             stmt.setString(1, customer.getName());
             stmt.setString(2, customer.getRegisterNumber());
             stmt.setString(3, customer.getAddress());
-            stmt.setString(4, customer.getPhoneNumber());
-            stmt.setString(5, customer.getEmail());
-            stmt.setString(6, customer.getNicNumber());
-            stmt.setString(7, customer.getAvatarUrl());
+            stmt.setString(4, customer.getCountryCode());
+            stmt.setString(5, customer.getPhoneNumber());
+            stmt.setString(6, customer.getEmail());
+            stmt.setString(7, customer.getNicNumber());
+            stmt.setString(8, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -79,8 +83,8 @@ public class CustomerDAOImpl extends BaseDAOImpl<Customer> implements CustomerDA
              PreparedStatement stmt = conn.prepareStatement(UPDATE_CUSTOMER_SQL)) {
 
             stmt.setString(1, customer.getName());
-            stmt.setString(2, customer.getRegisterNumber());
-            stmt.setString(3, customer.getAddress());
+            stmt.setString(2, customer.getAddress());
+            stmt.setString(3, customer.getCountryCode());
             stmt.setString(4, customer.getPhoneNumber());
             stmt.setString(5, customer.getEmail());
             stmt.setString(6, customer.getNicNumber());
@@ -124,10 +128,11 @@ public class CustomerDAOImpl extends BaseDAOImpl<Customer> implements CustomerDA
     }
 
     @Override
-    public Map<String, Boolean> checkCustomerExists(String email, String nicNumber, String phoneNumber) {
+    public Map<String, Boolean> checkCustomerExists(String email, String nicNumber, String countryCode, String phoneNumber) {
         Map<String, Boolean> existsMap = new HashMap<>();
         existsMap.put("email", false);
         existsMap.put("nicNumber", false);
+        existsMap.put("countryCode", false);
         existsMap.put("phoneNumber", false);
 
         try (Connection conn = dbConfig.getConnection();
@@ -135,7 +140,8 @@ public class CustomerDAOImpl extends BaseDAOImpl<Customer> implements CustomerDA
 
             stmt.setString(1, email);
             stmt.setString(2, nicNumber);
-            stmt.setString(3, phoneNumber);
+            stmt.setString(3, countryCode);
+            stmt.setString(4, phoneNumber);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {

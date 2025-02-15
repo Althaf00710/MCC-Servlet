@@ -15,7 +15,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <nav class="flex-1 overflow-y-auto p-4">
+    <nav class="flex-1 overflow-y-auto p-4 scrollbar-thin">
         <ul class="space-y-2">
             <li>
                 <a href="${pageContext.request.contextPath}/views/sites/admin/dashboard.jsp"
@@ -46,10 +46,31 @@
                 </a>
             </li>
             <li>
+                <a href="${pageContext.request.contextPath}/drivers/list"
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
+                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    Drivers
+                </a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/drivers/list"
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
+                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    Cabs
+                </a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/drivers/list"
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
+                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    Cab Types
+                </a>
+            </li>
+            <li>
                 <a href="${pageContext.request.contextPath}/customers/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-steering-wheel mr-3"></i>
-                    Customers
+                    Cab Brands
                 </a>
             </li>
             <li>
