@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Altha
@@ -60,7 +61,7 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/drivers/list"
+                <a href="${pageContext.request.contextPath}/cabtypes/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-steering-wheel mr-3"></i>
                     Cab Types
@@ -71,6 +72,13 @@
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-steering-wheel mr-3"></i>
                     Cab Brands
+                </a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/customers/list"
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
+                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    Customers
                 </a>
             </li>
             <li>
@@ -89,7 +97,7 @@
             <!-- Avatar -->
             <div class="flex-shrink-0">
                 <c:choose>
-                    <c:when test="${not empty user.avatarUrl}">
+                    <c:when test="${not empty user.avatarUrl and user.avatarUrl ne ''}">
                         <img class="h-10 w-10 rounded-full" src="${pageContext.request.contextPath}/${user.avatarUrl}" alt="User avatar">
                     </c:when>
                     <c:otherwise>

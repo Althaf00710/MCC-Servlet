@@ -21,7 +21,7 @@
   <script src="${pageContext.request.contextPath}/views/static/js/userSearch.js"></script>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/avatarInitials.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/modalAnimation.css">
-  <script src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
+  <script DEFER src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
   <script src="${pageContext.request.contextPath}/views/static/js/modalFunction.js"></script>
   <script src="${pageContext.request.contextPath}/views/static/js/confirmDelete.js"></script>
   <script src="${pageContext.request.contextPath}/views/static/js/modelEditFunction.js"></script>

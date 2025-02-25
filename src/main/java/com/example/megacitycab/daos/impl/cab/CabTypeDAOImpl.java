@@ -3,6 +3,7 @@ package com.example.megacitycab.daos.impl.cab;
 import com.example.megacitycab.daos.BaseDAOImpl;
 import com.example.megacitycab.daos.interfaces.cab.CabTypeDAO;
 import com.example.megacitycab.models.Cab.CabType;
+import com.example.megacitycab.models.user.User;
 import com.example.megacitycab.utils.DbConfig;
 
 import java.sql.*;
@@ -17,8 +18,8 @@ public class CabTypeDAOImpl extends BaseDAOImpl<CabType> implements CabTypeDAO {
     private final DbConfig dbConfig = DbConfig.getInstance();
     private static final String TABLE_NAME = "cabtype";
 
-    private static final String INSERT_CAB_TYPE_SQL = "INSERT INTO " + TABLE_NAME + " (typeName, description, capacity, baseFare, baseWaitTimeFare) VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_CAB_TYPE_SQL = "UPDATE " + TABLE_NAME + " SET typeName = ?, description = ?, capacity = ?, baseFare = ?, baseWaitTimeFare = ? WHERE id = ?";
+    private static final String INSERT_CAB_TYPE_SQL = "INSERT INTO " + TABLE_NAME + " (typeName, imageUrl, capacity, baseFare, baseWaitTimeFare) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE_CAB_TYPE_SQL = "UPDATE " + TABLE_NAME + " SET typeName = ?, capacity = ?, baseFare = ?, baseWaitTimeFare = ? WHERE id = ?";
     private static final String SEARCH_CAB_TYPE_SQL = "SELECT * FROM " + TABLE_NAME + " WHERE typeName LIKE ?";
     private static final String CHECK_CAB_TYPE_SQL = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE typeName = ?";
 
@@ -27,7 +28,7 @@ public class CabTypeDAOImpl extends BaseDAOImpl<CabType> implements CabTypeDAO {
         return new CabType.CabTypeBuilder()
                 .setId(rs.getInt("id"))
                 .setTypeName(rs.getString("typeName"))
-                .setDescription(rs.getString("description"))
+                .setImageUrl(rs.getString("imageUrl"))
                 .setCapacity(rs.getInt("capacity"))
                 .setBaseFare(rs.getDouble("baseFare"))
                 .setBaseWaitTimeFare(rs.getDouble("baseWaitTimeFare"))
@@ -40,7 +41,7 @@ public class CabTypeDAOImpl extends BaseDAOImpl<CabType> implements CabTypeDAO {
              PreparedStatement stmt = conn.prepareStatement(INSERT_CAB_TYPE_SQL)) {
 
             stmt.setString(1, cabType.getTypeName());
-            stmt.setString(2, cabType.getDescription());
+            stmt.setString(2, cabType.getImageUrl());
             stmt.setInt(3, cabType.getCapacity());
             stmt.setDouble(4, cabType.getBaseFare());
             stmt.setDouble(5, cabType.getBaseWaitTimeFare());
@@ -68,17 +69,33 @@ public class CabTypeDAOImpl extends BaseDAOImpl<CabType> implements CabTypeDAO {
              PreparedStatement stmt = conn.prepareStatement(UPDATE_CAB_TYPE_SQL)) {
 
             stmt.setString(1, cabType.getTypeName());
-            stmt.setString(2, cabType.getDescription());
-            stmt.setInt(3, cabType.getCapacity());
-            stmt.setDouble(4, cabType.getBaseFare());
-            stmt.setDouble(5, cabType.getBaseWaitTimeFare());
-            stmt.setInt(6, cabType.getId());
+            stmt.setInt(2, cabType.getCapacity());
+            stmt.setDouble(3, cabType.getBaseFare());
+            stmt.setDouble(4, cabType.getBaseWaitTimeFare());
+            stmt.setInt(5, cabType.getId());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error updating cab type", e);
         }
         return false;
+    }
+
+    @Override
+    public boolean updateImageUrl(CabType cabType) {
+        String sql = "UPDATE cabtype SET imageUrl=? WHERE id=?";
+
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cabType.getImageUrl());
+            stmt.setInt(2, cabType.getId());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
     @Override

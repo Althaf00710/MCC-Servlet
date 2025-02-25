@@ -46,7 +46,7 @@ CREATE TABLE CabBrand (
 CREATE TABLE CabType (
                          id INT AUTO_INCREMENT PRIMARY KEY,
                          typeName VARCHAR(50) NOT NULL UNIQUE,
-                         description TEXT,
+                         imageUrl TEXT,
                          capacity INT NOT NULL,
                          baseFare DOUBLE NOT NULL,
                          baseWaitTimeFare DOUBLE NOT NULL

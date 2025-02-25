@@ -3,6 +3,8 @@ package com.example.megacitycab.controllers.cab;
 import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.interfaces.cab.CabTypeDAO;
 import com.example.megacitycab.models.Cab.CabType;
+import com.example.megacitycab.models.user.User;
+import com.example.megacitycab.utils.ImageUploadHandler;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -60,6 +62,8 @@ public class CabTypeController extends HttpServlet {
             case "/delete":
                 deleteCabType(request, response, session);
                 break;
+            case "/updateImageUrl":
+                updateImageUrl(request, response, session);
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -88,7 +92,7 @@ public class CabTypeController extends HttpServlet {
         Map<String, Object> cabTypeMap = new HashMap<>();
         cabTypeMap.put("id", cabType.getId());
         cabTypeMap.put("typeName", cabType.getTypeName());
-        cabTypeMap.put("description", cabType.getDescription());
+        cabTypeMap.put("imageUrl", cabType.getImageUrl());
         cabTypeMap.put("capacity", cabType.getCapacity());
         cabTypeMap.put("baseFare", cabType.getBaseFare());
         cabTypeMap.put("baseWaitFare", cabType.getBaseWaitTimeFare());
@@ -100,6 +104,9 @@ public class CabTypeController extends HttpServlet {
     private void addCabType(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws IOException {
         String typeName = request.getParameter("typeName");
+        String capacityStr = request.getParameter("capacity");
+        String baseFareStr = request.getParameter("baseFare");
+        String baseWaitFareStr = request.getParameter("baseWaitFare");
 
         if (cabTypeDAO.checkExist(typeName)) {
             session.setAttribute("error", "Cab type already exists!");
@@ -107,14 +114,26 @@ public class CabTypeController extends HttpServlet {
             return;
         }
 
+        // Handle image upload
+        String imageUrl = null;
+        try {
+            imageUrl = ImageUploadHandler.getInstance().uploadImage(request, "image", "cabtypes");
+        } catch (IOException | ServletException ex) {
+            session.setAttribute("error", "Failed to upload cab type image!");
+            response.sendRedirect(request.getContextPath() + "/cabtypes/list");
+            return;
+        }
+
+        // Build CabType object
         CabType cabType = new CabType.CabTypeBuilder()
-                .setTypeName(request.getParameter("typeName"))
-                .setDescription(request.getParameter("description"))
-                .setCapacity(Integer.parseInt(request.getParameter("capacity")))
-                .setBaseFare(Double.parseDouble(request.getParameter("baseFare")))
-                .setBaseWaitTimeFare(Double.parseDouble(request.getParameter("baseWaitFare")))
+                .setTypeName(typeName)
+                .setImageUrl(imageUrl) // Updated field name
+                .setCapacity(Integer.parseInt(capacityStr))
+                .setBaseFare(Double.parseDouble(baseFareStr))
+                .setBaseWaitTimeFare(Double.parseDouble(baseWaitFareStr))
                 .build();
 
+        // Add to database
         boolean success = cabTypeDAO.add(cabType);
         session.setAttribute(success ? "success" : "error", success ? "Cab type added successfully!" : "Failed to add cab type!");
         response.sendRedirect(request.getContextPath() + "/cabtypes/list");
@@ -134,7 +153,6 @@ public class CabTypeController extends HttpServlet {
         CabType updatedCabType = new CabType.CabTypeBuilder()
                 .setId(cabTypeId)
                 .setTypeName(request.getParameter("typeName"))
-                .setDescription(request.getParameter("description"))
                 .setCapacity(Integer.parseInt(request.getParameter("capacity")))
                 .setBaseFare(Double.parseDouble(request.getParameter("baseFare")))
                 .setBaseWaitTimeFare(Double.parseDouble(request.getParameter("baseWaitFare")))
@@ -142,6 +160,42 @@ public class CabTypeController extends HttpServlet {
 
         boolean success = cabTypeDAO.update(updatedCabType);
         session.setAttribute(success ? "success" : "error", success ? "Cab type updated successfully!" : "Failed to update cab type!");
+        response.sendRedirect(request.getContextPath() + "/cabtypes/list");
+    }
+
+    private void updateImageUrl(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws IOException {
+        int cabTypeId = Integer.parseInt(request.getParameter("id"));
+        CabType cabType = cabTypeDAO.getById(cabTypeId);
+
+        if (cabType == null) {
+            session.setAttribute("error", "Cab type not found!");
+            response.sendRedirect(request.getContextPath() + "/cabtypes/list");
+            return;
+        }
+
+        String imageUrl = null;
+        try {
+            imageUrl = ImageUploadHandler.getInstance().uploadImage(request, "image", "cabtypes");
+
+            // Delete the old image if a new one is successfully uploaded
+            if (imageUrl != null && !imageUrl.equals(cabType.getImageUrl())) {
+                System.out.println("Deleting old image: " + cabType.getImageUrl());
+                ImageUploadHandler.getInstance().deleteImage(cabType.getImageUrl());
+            }
+        } catch (IOException | ServletException ex) {
+            session.setAttribute("error", "Failed to upload cab type image!");
+            response.sendRedirect(request.getContextPath() + "/cabtypes/list");
+            return;
+        }
+
+        // Update the cab type image URL
+        cabType.setImageUrl(imageUrl);
+        boolean success = cabTypeDAO.updateImageUrl(cabType);
+
+        session.setAttribute(success ? "success" : "error",
+                success ? "Cab type image updated successfully!" : "Failed to update cab type image!");
+
         response.sendRedirect(request.getContextPath() + "/cabtypes/list");
     }
 

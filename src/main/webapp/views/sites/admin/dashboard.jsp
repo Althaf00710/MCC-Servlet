@@ -10,8 +10,10 @@
     <head>
         <title>MCC | Dashboard</title>
         <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/scrollBar.css">
         <link rel="stylesheet" href="../../static/css/mouseAnimation.css">
         <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+        <script DEFER src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
     </head>
     <body>
         <%@ include file="common/navBar.jsp" %>
