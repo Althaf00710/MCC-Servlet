@@ -124,3 +124,28 @@ function showFeedback(message) {
     document.querySelector('#cabTypeImageForm').appendChild(feedback);
     setTimeout(() => feedback.remove(), 3000);
 }
+
+function deleteCabType(cabTypeId) {
+    if (confirm("Are you sure you want to delete this cab type?")) {
+        fetch(`${window.location.origin}/megacitycab_war_exploded/cabtypes/delete`, {
+            method: "POST", // Change to "DELETE" if your backend supports it
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id: cabTypeId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Cab type deleted successfully!");
+                    location.reload();
+                } else {
+                    alert("Failed to delete cab type: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error deleting cab type:", error);
+                alert("An error occurred while deleting the cab type.");
+            });
+    }
+}

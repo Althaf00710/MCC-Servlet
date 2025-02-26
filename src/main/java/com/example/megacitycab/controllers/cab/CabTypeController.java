@@ -43,6 +43,9 @@ public class CabTypeController extends HttpServlet {
             case "/edit":
                 editCabType(request, response);
                 break;
+            case "/get":
+                getCabTypes(request, response);
+                break;
         }
     }
 
@@ -64,6 +67,7 @@ public class CabTypeController extends HttpServlet {
                 break;
             case "/updateImageUrl":
                 updateImageUrl(request, response, session);
+                break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -75,6 +79,20 @@ public class CabTypeController extends HttpServlet {
         request.setAttribute("cabTypes", cabTypes);
         request.getRequestDispatcher("/views/sites/admin/cab/cabtypes.jsp").forward(request, response);
     }
+
+    private void getCabTypes(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<CabType> cabTypes = cabTypeDAO.getAll();
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(cabTypes);
+
+        response.getWriter().write(jsonResponse);
+    }
+
 
     private void searchCabTypes(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

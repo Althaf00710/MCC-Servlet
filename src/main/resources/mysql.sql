@@ -61,11 +61,13 @@ CREATE TABLE Cab (
                      cabName VARCHAR(100),
                      registrationNumber VARCHAR(50),
                      plateNumber VARCHAR(50),
-                     status VARCHAR(20),
-                     lastService DATE,
+                     status VARCHAR(20) DEFAULT 'Available',
+                     lastService DATETIME DEFAULT CURRENT_TIMESTAMP,
                      FOREIGN KEY (cabBrandId) REFERENCES CabBrand(id) ON DELETE CASCADE,
                      FOREIGN KEY (cabTypeId) REFERENCES CabType(id) ON DELETE CASCADE
 );
+
+SELECT * FROM cab;
 
 CREATE TABLE CabAssign (
                            id INT AUTO_INCREMENT PRIMARY KEY,

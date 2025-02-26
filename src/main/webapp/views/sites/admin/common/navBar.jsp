@@ -54,7 +54,7 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/drivers/list"
+                <a href="${pageContext.request.contextPath}/cabs/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-steering-wheel mr-3"></i>
                     Cabs
@@ -68,7 +68,7 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/customers/list"
+                <a href="${pageContext.request.contextPath}/cabbrand/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-steering-wheel mr-3"></i>
                     Cab Brands
