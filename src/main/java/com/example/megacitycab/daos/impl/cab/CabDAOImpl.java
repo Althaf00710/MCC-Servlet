@@ -20,7 +20,7 @@ public class CabDAOImpl extends BaseDAOImpl<Cab> implements CabDAO {
 
     private static final String GET_ALL_SQL = "SELECT * FROM " + TABLE_NAME;
     private static final String INSERT_CAB_SQL = "INSERT INTO " + TABLE_NAME + " (cabBrandId, cabName, cabTypeId, registrationNumber, plateNumber) VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_CAB_SQL = "UPDATE " + TABLE_NAME + " SET cabBrandId = ?, cabName = ?, cabTypeId = ?, registrationNumber = ?, plateNumber = ?, status = ?, lastService = ? WHERE id = ?";
+    private static final String UPDATE_CAB_SQL = "UPDATE " + TABLE_NAME + " SET cabBrandId = ?, cabName = ?, cabTypeId = ?, registrationNumber = ?, plateNumber = ? WHERE id = ?";
     private static final String SEARCH_CAB_SQL = "SELECT * FROM " + TABLE_NAME + " WHERE cabName LIKE ?";
     private static final String CHECK_CAB_SQL = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE registrationNumber = ?";
 
@@ -32,10 +32,8 @@ public class CabDAOImpl extends BaseDAOImpl<Cab> implements CabDAO {
         return new Cab.CabBuilder()
                 .setId(rs.getInt("id"))
                 .setCabBrandId(rs.getInt("cabBrandId"))
-                .setCabBrandName(rs.getString("brandName"))  // Set brand name
                 .setCabName(rs.getString("cabName"))
                 .setCabTypeId(rs.getInt("cabTypeId"))
-                .setCabTypeName(rs.getString("typeName"))  // Set type name
                 .setRegistrationNumber(rs.getString("registrationNumber"))
                 .setPlateNumber(rs.getString("plateNumber"))
                 .setStatus(rs.getString("status"))
@@ -120,9 +118,7 @@ public class CabDAOImpl extends BaseDAOImpl<Cab> implements CabDAO {
             stmt.setInt(3, entity.getCabTypeId());
             stmt.setString(4, entity.getRegistrationNumber());
             stmt.setString(5, entity.getPlateNumber());
-            stmt.setString(6, entity.getStatus());
-            stmt.setDate(7, new java.sql.Date(entity.getLastService().getTime()));
-            stmt.setInt(8, entity.getId());
+            stmt.setInt(6, entity.getId());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error updating Cab", e);

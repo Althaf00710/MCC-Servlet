@@ -150,6 +150,7 @@ public class CabController extends HttpServlet {
         int cabTypeId = Integer.parseInt(request.getParameter("cabTypeId"));
 
         Cab updatedCab = new Cab.CabBuilder()
+                .setId(cabId)
                 .setCabName(cabName)
                 .setRegistrationNumber(registrationNumber)
                 .setPlateNumber(plateNumber)

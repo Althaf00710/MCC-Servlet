@@ -70,7 +70,7 @@
                         <td class="px-4 py-2">${cab.status}</td>
                         <td class="px-4 py-2">${cab.lastService}</td>
                         <td class="px-4 py-2">
-                            <button class="bg-blue-500 text-white px-4 py-1 rounded-lg">Edit</button>
+                            <button class="bg-blue-500 text-white px-4 py-1 rounded-lg" onclick="openEditModal(${cab.id})">Edit</button>
                             <button class="bg-red-500 text-white px-4 py-1 rounded-lg" onclick="confirmDelete()">Delete</button>
                         </td>
                     </tr>
@@ -123,5 +123,49 @@
         </div>
     </div>
 
+    <!-- Edit Cab Modal -->
+    <div id="editModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Cab</h2>
+
+            <form id="editCabForm" action="${pageContext.request.contextPath}/cabs/update" method="post">
+                <input type="hidden" id="editCabId" name="id">
+
+                <div class="mb-4">
+                    <label for="editCabBrandId" class="block text-gray-700">Cab Brand</label>
+                    <select id="editCabBrandId" name="cabBrandId" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="">Select Brand</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="editCabTypeId" class="block text-gray-700">Cab Type</label>
+                    <select id="editCabTypeId" name="cabTypeId" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="">Select Type</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="editCabName" class="block text-gray-700">Cab Name</label>
+                    <input type="text" id="editCabName" name="cabName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="editRegistrationNumber" class="block text-gray-700">Registration Number</label>
+                    <input type="text" id="editRegistrationNumber" name="registrationNumber" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="editPlateNumber" class="block text-gray-700">Plate Number</label>
+                    <input type="text" id="editPlateNumber" name="plateNumber" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="button" onclick="closeEditModal()" class="bg-gray-400 text-white px-4 py-2 rounded-lg mr-2">Cancel</button>
+                    <button type="submit" class="bg-orange-500 text-white px-6 py-2 rounded-lg">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

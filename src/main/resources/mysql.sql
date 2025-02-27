@@ -69,6 +69,8 @@ CREATE TABLE Cab (
 
 SELECT * FROM cab;
 
+SELECT * FROM cab WHERE id = 2;
+
 CREATE TABLE CabAssign (
                            id INT AUTO_INCREMENT PRIMARY KEY,
                            cabId INT NOT NULL,
