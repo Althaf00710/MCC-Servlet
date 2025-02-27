@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Altha
@@ -68,7 +69,8 @@
                         <td class="px-4 py-2">${cab.plateNumber}</td>
                         <td class="px-4 py-2">${cab.cabTypeName}</td>
                         <td class="px-4 py-2">${cab.status}</td>
-                        <td class="px-4 py-2">${cab.lastService}</td>
+                        <fmt:formatDate value="${cab.lastService}" pattern="yyyy-MM-dd" var="Date"/>
+                        <td class="px-4 py-2">${Date}</td>
                         <td class="px-4 py-2">
                             <button class="bg-blue-500 text-white px-4 py-1 rounded-lg" onclick="openEditModal(${cab.id})">Edit</button>
                             <button class="bg-red-500 text-white px-4 py-1 rounded-lg" onclick="confirmDelete()">Delete</button>

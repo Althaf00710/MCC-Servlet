@@ -142,3 +142,5 @@ CREATE TABLE CompanyData (
                              discount DOUBLE NOT NULL,
                              minAmountForDiscount DOUBLE NOT NULL
 );
+
+SELECT * FROM companydata;

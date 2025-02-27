@@ -1,11 +1,13 @@
 package com.example.megacitycab.daos;
 
+import com.example.megacitycab.daos.impl.CompanyDataDAOImpl;
 import com.example.megacitycab.daos.impl.CustomerDAOImpl;
 import com.example.megacitycab.daos.impl.DriverDAOImpl;
 import com.example.megacitycab.daos.impl.UserDAOImpl;
 import com.example.megacitycab.daos.impl.cab.CabBrandDAOImpl;
 import com.example.megacitycab.daos.impl.cab.CabDAOImpl;
 import com.example.megacitycab.daos.impl.cab.CabTypeDAOImpl;
+import com.example.megacitycab.daos.interfaces.CompanyDataDAO;
 import com.example.megacitycab.daos.interfaces.CustomerDAO;
 import com.example.megacitycab.daos.interfaces.DriverDAO;
 import com.example.megacitycab.daos.interfaces.UserDAO;
@@ -29,4 +31,6 @@ public class DAOFactory {
     public static CabBrandDAO getCabBrandDAO() { return new CabBrandDAOImpl(); }
 
     public static CabDAO getCabDAO() { return new CabDAOImpl(); }
+
+    public static CompanyDataDAO getCompanyDataDAO() { return new CompanyDataDAOImpl(); }
 }
