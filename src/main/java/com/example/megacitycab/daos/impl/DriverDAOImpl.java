@@ -214,4 +214,41 @@ public class DriverDAOImpl implements DriverDAO {
         }
         return drivers;
     }
+
+    @Override
+    public List<Driver> getNonAssignedDrivers(int cabId) {
+        List<Driver> drivers = new ArrayList<>();
+        String query = "SELECT d.id, d.name, d.nicNumber, d.licenceNumber, d.phoneNumber, d.email, d.avatarUrl, d.status " +
+                "FROM Driver d " +
+                "WHERE d.id NOT IN (SELECT ca.driverId FROM cabassign ca WHERE ca.status = 'ACTIVE')";
+
+        try (var connection = dbConfig.getConnection();
+             var preparedStatement = connection.prepareStatement(query)) {
+
+            // Set the cabId parameter to filter drivers not assigned to the given cab
+            //preparedStatement.setInt(1, cabId);
+
+            try (var rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    Driver driver = new Driver.DriverBuilder(rs.getString("name"),
+                            rs.getString("nicNumber"),
+                            rs.getString("licenceNumber"),
+                            rs.getString("phoneNumber"),
+                            rs.getString("email"))
+                            .setId(rs.getInt("id"))
+                            .setAvatarUrl(rs.getString("avatarUrl"))
+                            .setStatus(rs.getString("status"))
+                            .build();
+                    drivers.add(driver);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle errors properly
+        }
+
+        return drivers;
+    }
+
+
 }

@@ -47,6 +47,9 @@ public class DriverController extends HttpServlet {
             case "/edit":
                 editDriver(request, response);
                 break;
+            case "/nonassigned":
+                nonAssigned(request, response);
+                break;
         }
     }
 
@@ -82,6 +85,20 @@ public class DriverController extends HttpServlet {
         List<Driver> drivers = driverDao.getAllDrivers();
         request.setAttribute("drivers", drivers);
         request.getRequestDispatcher("/views/sites/admin/drivers.jsp").forward(request, response);
+    }
+
+    private void nonAssigned(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int cabId = Integer.parseInt(request.getParameter("cabId"));
+        List<Driver> drivers = driverDao.getNonAssignedDrivers(cabId);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(drivers);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        response.getWriter().write(json);
     }
 
     private void searchDrivers(HttpServletRequest request, HttpServletResponse response)

@@ -18,6 +18,7 @@
     <script src="${pageContext.request.contextPath}/views/static/js/confirmDelete.js"></script>
     <script src="${pageContext.request.contextPath}/views/static/js/modalFunction.js"></script>
     <script src="${pageContext.request.contextPath}/views/static/js/cabFunctions.js"></script>
+    <script src="${pageContext.request.contextPath}/views/static/js/cabAssignFunctions.js"></script>
 </head>
 <body>
     <%@ include file="../common/navBar.jsp" %>
@@ -48,32 +49,44 @@
 
         <!-- Table Section for Cabs -->
         <div class="overflow-x-auto bg-white rounded-lg shadow-md">
-            <table class="min-w-full table-auto">
-                <thead>
-                <tr>
-                    <th class="px-4 py-2 text-left text-gray-600">Name</th>
-                    <th class="px-4 py-2 text-left text-gray-600">Register No</th>
-                    <th class="px-4 py-2 text-left text-gray-600">Plate No</th>
-                    <th class="px-4 py-2 text-left text-gray-600">Cab Type</th>
-                    <th class="px-4 py-2 text-left text-gray-600">Status</th>
-                    <th class="px-4 py-2 text-left text-gray-600">Last Service</th>
-                    <th class="px-4 py-2 text-left text-gray-600">Actions</th>
-                </tr>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Register No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plate No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cab Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Service</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200">
                 <!-- Loop through the list of cabs -->
                 <c:forEach var="cab" items="${cabs}">
                     <tr>
-                        <td class="px-4 py-2">${cab.cabBrandName} ${cab.cabName}</td>
-                        <td class="px-4 py-2">${cab.registrationNumber}</td>
-                        <td class="px-4 py-2">${cab.plateNumber}</td>
-                        <td class="px-4 py-2">${cab.cabTypeName}</td>
-                        <td class="px-4 py-2">${cab.status}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700">${cab.cabBrandName} ${cab.cabName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 assignedDriverCell" id="cabRow_${cab.id}" data-cab-id="${cab.id}">
+                            <!-- JavaScript will insert either the assigned driver or dropdown -->
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cab.registrationNumber}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cab.plateNumber}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cab.cabTypeName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cab.status}</td>
                         <fmt:formatDate value="${cab.lastService}" pattern="yyyy-MM-dd" var="Date"/>
-                        <td class="px-4 py-2">${Date}</td>
-                        <td class="px-4 py-2">
-                            <button class="bg-blue-500 text-white px-4 py-1 rounded-lg" onclick="openEditModal(${cab.id})">Edit</button>
-                            <button class="bg-red-500 text-white px-4 py-1 rounded-lg" onclick="confirmDelete()">Delete</button>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${Date}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex items-center space-x-1">
+                                <button class="text-orange-600 hover:text-orange-900 px-3 py-1 rounded-3xl hover:bg-orange-200 flex items-center" onclick="openEditModal(${cab.id})">
+                                    <i class="fi fi-rr-pencil mr-2"></i>
+                                    Edit
+                                </button>
+                                <button class="text-red-600 hover:text-red-900 px-3 py-1 rounded-3xl hover:bg-red-200 flex items-center" onclick="confirmDelete()">
+                                    <i class="fi fi-rr-trash mr-2"></i>
+                                    Delete
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </c:forEach>

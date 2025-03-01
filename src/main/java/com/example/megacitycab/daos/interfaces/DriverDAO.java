@@ -15,4 +15,5 @@ public interface DriverDAO {
     boolean updateAvatarUrl(Driver driver);
     boolean updateStatus(int driverId, String status);
     List<Driver> getDriversBySearch(String search);
+    List<Driver> getNonAssignedDrivers(int cabId);
 }

@@ -11,4 +11,14 @@
         <file-size-threshold>1048576</file-size-threshold> <!-- 1MB before writing to disk -->
     </multipart-config>
 
+    <servlet>
+        <servlet-name>CabAssignServlet</servlet-name>
+        <servlet-class>com.example.megacitycab.controllers.cab.CabAssignController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CabAssignServlet</servlet-name>
+        <url-pattern>/cabassign/list</url-pattern>
+    </servlet-mapping>
+
 </web-app>

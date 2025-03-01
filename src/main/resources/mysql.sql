@@ -69,16 +69,19 @@ CREATE TABLE Cab (
 
 SELECT * FROM cab;
 
-SELECT * FROM cab WHERE id = 2;
-
 CREATE TABLE CabAssign (
                            id INT AUTO_INCREMENT PRIMARY KEY,
                            cabId INT NOT NULL,
                            driverId INT NOT NULL,
-                           assignDate DATE NOT NULL,
+                           assignDate DATE DEFAULT CURRENT_TIMESTAMP,
+                           status VARCHAR(25) NOT NULL,
                            FOREIGN KEY (cabId) REFERENCES Cab(id) ON DELETE CASCADE,
                            FOREIGN KEY (driverId) REFERENCES Driver(id) ON DELETE CASCADE
 );
+
+SELECT * FROM CabAssign;
+
+SELECT * FROM driver;
 
 CREATE TABLE Booking (
                          id INT AUTO_INCREMENT PRIMARY KEY,
