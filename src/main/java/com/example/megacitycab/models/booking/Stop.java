@@ -4,10 +4,20 @@ public class Stop {
     private int id;
     private int bookingId;
     private String stopLocation;
-    private String longitude;
-    private String latitude;
+    private double longitude;
+    private double latitude;
+    private String placeId;
     private double distanceFromLastStop;
     private int waitMinutes;
+
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
 
     public int getId() {
         return id;
@@ -33,19 +43,19 @@ public class Stop {
         this.stopLocation = stopLocation;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 

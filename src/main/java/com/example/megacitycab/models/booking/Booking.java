@@ -12,8 +12,17 @@ public class Booking {
     private Date dateTimeCreated;
     private String status;
     private String pickupLocation;
-    private String longitude;
-    private String latitude;
+    private double longitude;
+    private double latitude;
+    private String placeId;
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
 
     public int getId() {
         return id;
@@ -87,19 +96,19 @@ public class Booking {
         this.pickupLocation = pickupLocation;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 }

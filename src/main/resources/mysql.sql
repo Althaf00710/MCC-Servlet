@@ -93,8 +93,9 @@ CREATE TABLE Booking (
                          dateTimeCreated DATETIME DEFAULT CURRENT_TIMESTAMP,
                          status VARCHAR(20) NOT NULL,
                          pickupLocation TEXT,
-                         longitude VARCHAR(50),
-                         latitude VARCHAR(50),
+                         longitude DECIMAL(10, 6),
+                         latitude DECIMAL(10, 6),
+                         placeId VARCHAR(100),
                          FOREIGN KEY (cabId) REFERENCES Cab(id) ON DELETE CASCADE,
                          FOREIGN KEY (customerId) REFERENCES Customer(id) ON DELETE CASCADE,
                          FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
@@ -104,12 +105,16 @@ CREATE TABLE Stop (
                       id INT AUTO_INCREMENT PRIMARY KEY,
                       bookingId INT NOT NULL,
                       stopLocation TEXT,
-                      longitude VARCHAR(50),
-                      latitude VARCHAR(50),
+                      longitude DECIMAL(10, 6),
+                      latitude DECIMAL(10, 6),
+                      placeId VARCHAR(100),
                       distanceFromLastStop DOUBLE NOT NULL,
                       waitMinutes INT NOT NULL,
                       FOREIGN KEY (bookingId) REFERENCES Booking(id) ON DELETE CASCADE
 );
+
+SELECT * FROM booking;
+SELECT * FROM stop;
 
 CREATE TABLE Billing (
                          id INT AUTO_INCREMENT PRIMARY KEY,
@@ -123,6 +128,9 @@ CREATE TABLE Billing (
                          cash DOUBLE,
                          deposit DOUBLE,
                          card DOUBLE,
+                         totalAmount DOUBLE GENERATED ALWAYS AS (
+                             ((totalDistanceFare + totalWaitFare) * (1 - discount / 100)) * (1 + tax / 100)
+                             ) STORED,
                          FOREIGN KEY (bookingId) REFERENCES Booking(id) ON DELETE CASCADE,
                          FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
 );

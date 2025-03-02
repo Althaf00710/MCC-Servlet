@@ -14,6 +14,15 @@ public class Billing {
     private double cash;
     private double deposit;
     private double card;
+    private double totalAmount;
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 
     public int getId() {
         return id;
