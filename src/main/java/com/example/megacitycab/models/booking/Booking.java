@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Booking {
     private int id;
-    private int bookingNumber;
+    private String bookingNumber;
     private int cabId;
     private int customerId;
     private int userId;
@@ -32,11 +32,11 @@ public class Booking {
         this.id = id;
     }
 
-    public int getBookingNumber() {
+    public String getBookingNumber() {
         return bookingNumber;
     }
 
-    public void setBookingNumber(int bookingNumber) {
+    public void setBookingNumber(String bookingNumber) {
         this.bookingNumber = bookingNumber;
     }
 

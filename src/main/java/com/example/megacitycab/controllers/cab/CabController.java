@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @WebServlet("/cabs/*")
@@ -34,6 +35,9 @@ public class CabController extends HttpServlet {
                 break;
             case "/search":
                 searchCab(request, response);
+                break;
+            case "/getByType":
+                getByType(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -59,6 +63,19 @@ public class CabController extends HttpServlet {
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+    private void getByType(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        int id = Integer.parseInt(request.getParameter("cabTypeId"));
+        List<Cab> cabs = cabDAO.getCabsByCabType(id);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(cabs);
+
+        response.getWriter().write(jsonResponse);
     }
 
     private void editCab(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

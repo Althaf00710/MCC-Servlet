@@ -23,9 +23,13 @@ public class CabDAOImpl extends BaseDAOImpl<Cab> implements CabDAO {
     private static final String UPDATE_CAB_SQL = "UPDATE " + TABLE_NAME + " SET cabBrandId = ?, cabName = ?, cabTypeId = ?, registrationNumber = ?, plateNumber = ? WHERE id = ?";
     private static final String SEARCH_CAB_SQL = "SELECT * FROM " + TABLE_NAME + " WHERE cabName LIKE ?";
     private static final String CHECK_CAB_SQL = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE registrationNumber = ?";
-
-
-
+    private static final String GET_CAB_BY_CAB_TYPE_SQL =
+            "SELECT c.id, c.cabBrandId, c.cabTypeId, " +
+                    "CONCAT(b.brandName, ' ', c.cabName) AS cabFullName, " +
+                    "c.registrationNumber, c.plateNumber, c.status, c.lastService " +
+                    "FROM " + TABLE_NAME + " c " +
+                    "JOIN CabBrand b ON c.cabBrandId = b.id " +
+                    "WHERE c.cabTypeId = ?";
 
     @Override
     protected Cab mapResultSetToEntity(ResultSet rs) throws SQLException {
@@ -58,6 +62,22 @@ public class CabDAOImpl extends BaseDAOImpl<Cab> implements CabDAO {
         return false;
     }
 
+    @Override
+    public List<Cab> getCabsByCabType(int cabTypeId) {
+        List<Cab> cabs = new ArrayList<>();
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(GET_CAB_BY_CAB_TYPE_SQL)) {
+            stmt.setInt(1, cabTypeId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    cabs.add(mapResultSetToEntity(rs));
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error searching Cabs", e);
+        }
+        return cabs;
+    }
 
     @Override
     public boolean add(Cab entity) {

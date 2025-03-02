@@ -36,6 +36,9 @@ public class CustomerController extends HttpServlet {
             case "/list":
                 listCustomers(request, response);
                 break;
+            case "/getCustomers":
+                getCustomers(request, response);
+                break;
             case "/search":
                 searchCustomers(request, response);
                 break;
@@ -74,6 +77,16 @@ public class CustomerController extends HttpServlet {
         List<Customer> customers = customerDao.getAll();
         request.setAttribute("customers", customers);
         request.getRequestDispatcher("/views/sites/admin/customer/customers.jsp").forward(request, response);
+    }
+
+    private void getCustomers(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<Customer> customers = customerDao.getAll();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(customers);
+        response.getWriter().write(jsonResponse);
     }
 
     private void searchCustomers(HttpServletRequest request, HttpServletResponse response)

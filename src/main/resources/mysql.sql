@@ -85,10 +85,10 @@ SELECT * FROM driver;
 
 CREATE TABLE Booking (
                          id INT AUTO_INCREMENT PRIMARY KEY,
-                         bookingNumber INT NOT NULL UNIQUE,
+                         bookingNumber VARCHAR(25) NOT NULL UNIQUE,
                          cabId INT NOT NULL,
                          customerId INT NOT NULL,
-                         userId INT NOT NULL,
+                         userId INT,
                          bookingDateTime DATETIME NOT NULL,
                          dateTimeCreated DATETIME DEFAULT CURRENT_TIMESTAMP,
                          status VARCHAR(20) NOT NULL,

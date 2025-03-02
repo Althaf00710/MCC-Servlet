@@ -26,10 +26,10 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/bookings"
+                <a href="${pageContext.request.contextPath}/booking/add-booking"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'bookings' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-calendar mr-3"></i>
-                    Bookings
+                    Add Bookings
                 </a>
             </li>
             <li>
