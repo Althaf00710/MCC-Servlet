@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/mouseAnimation.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/scrollBar.css">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script DEFER src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
     <script DEFER src="${pageContext.request.contextPath}/views/static/js/addBookingFunction.js"></script>
     <script DEFER src="https://maps.googleapis.com/maps/api/js?key=<%= request.getAttribute("apiKey") %>&libraries=places"></script>
@@ -24,33 +27,44 @@
         <!-- Form Container -->
         <div class="flex-1 min-w-[300px] bg-white p-6 rounded-lg shadow-md">
             <form id="bookingForm" class="bg-white">
-                <!-- Date -->
-                <label class="block text-gray-600">Booking Date</label>
-                <input type="date" id="bookingDate" class="w-full p-2 border rounded mb-4" required>
+                <!-- Booking Date and Customer on Same Line -->
+                <div class="flex gap-4 mb-4">
+                    <div class="w-2/5">
+                        <label class="block text-gray-600">Booking Date</label>
+                        <input type="datetime-local" id="bookingDate" class="w-full p-2 border rounded" required>
+                    </div>
+                    <div class="w-3/5">
+                        <label class="block text-gray-600">Customer</label>
+                        <select id="customerSelect" class="w-full p-2 border rounded" required>
+                            <option value="">Select a Customer</option>
+                            <!-- Dynamic options -->
+                        </select>
+                    </div>
+                </div>
 
-                <!-- Customer Selection -->
-                <label class="block text-gray-600">Customer</label>
-                <select id="customerSelect" class="w-full p-2 border rounded mb-4" required>
-                    <option value="">Select a Customer</option>
-                    <!-- Dynamic options -->
-                </select>
-
-                <!-- Pickup & Drop Locations -->
-                <label class="block text-gray-600">Pickup Location</label>
-                <input type="text" id="pickupLocation" class="w-full p-2 border rounded mb-4 location-input" required>
-
-                <label class="block text-gray-600">Drop Location</label>
-                <input type="text" id="dropLocation" class="w-full p-2 border rounded mb-4 location-input" required>
+                <!-- Pickup and Drop on Same Line with Arrow -->
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="flex-1">
+                        <label class="block text-gray-600">Pickup Location</label>
+                        <input type="text" id="pickupLocation" class="w-full p-2 border rounded location-input" required>
+                    </div>
+                    <i class="fi fi-rr-arrow-right text-gray-600"></i>
+                    <div class="flex-1">
+                        <label class="block text-gray-600">Drop Location</label>
+                        <input type="text" id="dropLocation" class="w-full p-2 border rounded location-input" required>
+                    </div>
+                </div>
 
                 <!-- Stops Section -->
                 <div id="stopsContainer"></div>
-                <button type="button" id="addStop" class="bg-blue-500 text-white px-3 py-1 rounded mb-4">+ Add Stop</button>
+                <button type="button" id="addStop" class="text-blue-500 mb-4">
+                    <i class="fi fi-rr-plus"></i> Add Stop
+                </button>
 
                 <!-- Cab Type Selection -->
                 <label class="block text-gray-600">Cab Type</label>
-                <select id="cabTypeSelect" class="w-full p-2 border rounded mb-4" required>
-                    <option value="">Select a Cab Type</option>
-                </select>
+                <div id="cabTypeContainer" class="flex flex-wrap gap-4 mb-4"></div>
+                <input type="hidden" id="selectedCabType" name="cabTypeId" required>
 
                 <!-- Cab Selection -->
                 <label class="block text-gray-600">Cab</label>
@@ -64,7 +78,7 @@
 
         <!-- Map Container -->
         <div class="flex-1 min-w-[300px]">
-            <div id="map" style="height: 400px; width: 100%;"></div>
+            <div id="map" style="height: 800px; width: 100%;"></div>
         </div>
     </div>
 
