@@ -9,6 +9,7 @@ import com.example.megacitycab.utils.NumberGenerator;
 
 import java.sql.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookingDAOImpl extends BaseDAOImpl<Booking> implements BookingDAO {
@@ -169,8 +170,61 @@ public class BookingDAOImpl extends BaseDAOImpl<Booking> implements BookingDAO {
 
     @Override
     public List<Booking> getAll() {
-        return super.getAll(TABLE_NAME);
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT \n" +
+                "    b.id AS bookingId,\n" +
+                "    b.bookingNumber,\n" +
+                "    b.cabId,\n" +
+                "    CONCAT(cb.brandName, ' ', c.cabName) AS cabName,\n" +
+                "    b.customerId,\n" +
+                "    cu.name AS customerName,\n" +
+                "    b.userId,\n" +
+                "    u.username AS userName,\n" +
+                "    b.bookingDateTime,\n" +
+                "    b.dateTimeCreated,\n" +
+                "    b.status,\n" +
+                "    b.pickupLocation,\n" +
+                "    b.longitude AS pickupLongitude,\n" +
+                "    b.latitude AS pickupLatitude,\n" +
+                "    b.placeId AS pickupPlaceId\n" +
+                "FROM Booking b\n" +
+                "LEFT JOIN Cab c ON b.cabId = c.id\n" +
+                "LEFT JOIN CabBrand cb ON c.cabBrandId = cb.id\n" +
+                "LEFT JOIN Customer cu ON b.customerId = cu.id\n" +
+                "LEFT JOIN User u ON b.userId = u.id\n" +
+                "ORDER BY b.id DESC;";
+
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Booking booking = new Booking();
+                booking.setId(rs.getInt("bookingId")); // Corrected column name
+                booking.setBookingNumber(rs.getString("bookingNumber"));
+                booking.setCabId(rs.getInt("cabId"));
+                booking.setCustomerId(rs.getInt("customerId"));
+                booking.setUserId(rs.getInt("userId"));
+                booking.setBookingDateTime(rs.getTimestamp("bookingDateTime"));
+                booking.setDateTimeCreated(rs.getTimestamp("dateTimeCreated"));
+                booking.setStatus(rs.getString("status"));
+                booking.setPickupLocation(rs.getString("pickupLocation"));
+                booking.setLongitude(rs.getDouble("pickupLongitude"));
+                booking.setLatitude(rs.getDouble("pickupLatitude"));
+                booking.setPlaceId(rs.getString("pickupPlaceId"));
+
+                booking.setCabName(rs.getString("cabName"));
+                booking.setCustomerName(rs.getString("customerName"));
+                booking.setUserName(rs.getString("userName"));
+
+                bookings.add(booking);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
     }
+
 
     @Override
     public boolean update(Booking entity) {

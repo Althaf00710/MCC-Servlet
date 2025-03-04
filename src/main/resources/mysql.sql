@@ -163,3 +163,26 @@ CREATE TABLE CompanyData (
 );
 
 SELECT * FROM companydata;
+
+SELECT
+    b.id AS bookingId,
+    b.bookingNumber,
+    b.cabId,
+    CONCAT(cb.brandName, ' ', c.cabName) AS cabName,
+    b.customerId,
+    cu.name AS customerName,
+    b.userId,
+    u.username AS userName,
+    b.bookingDateTime,
+    b.dateTimeCreated,
+    b.status,
+    b.pickupLocation,
+    b.longitude AS pickupLongitude,
+    b.latitude AS pickupLatitude,
+    b.placeId AS pickupPlaceId
+FROM Booking b
+         LEFT JOIN Cab c ON b.cabId = c.id
+         LEFT JOIN CabBrand cb ON c.cabBrandId = cb.id
+         LEFT JOIN Customer cu ON b.customerId = cu.id
+         LEFT JOIN User u ON b.userId = u.id
+ORDER BY b.id DESC;

@@ -76,9 +76,10 @@ public class BookingController extends HttpServlet {
     }
 
     private void listBookings(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+            throws ServletException, IOException {
         List<Booking> bookings = bookingDAO.getAll();
-        sendJsonResponse(response, bookings);
+        request.setAttribute("bookings", bookings);
+        request.getRequestDispatcher("/views/sites/admin/booking/viewBooking.jsp").forward(request, response);
     }
 
     private void getBooking(HttpServletRequest request, HttpServletResponse response)

@@ -111,4 +111,33 @@ public class Booking {
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
+
+    //Helper Attributes
+    private String CabName;
+    private String customerName;
+    private String userName;
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getCabName() {
+        return CabName;
+    }
+
+    public void setCabName(String cabName) {
+        CabName = cabName;
+    }
 }

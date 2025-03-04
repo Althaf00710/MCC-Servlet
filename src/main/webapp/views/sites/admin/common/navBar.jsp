@@ -33,17 +33,17 @@
                 </a>
             </li>
             <li>
+                <a href="${pageContext.request.contextPath}/booking/list"
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
+                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    View Bookings
+                </a>
+            </li>
+            <li>
                 <a href="${pageContext.request.contextPath}/users/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'users' ? 'bg-gray-700' : ''}">
                     <i class="fi fi-rr-users mr-3"></i>
                     Users
-                </a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/drivers/list"
-                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-steering-wheel mr-3"></i>
-                    Drivers
                 </a>
             </li>
             <li>

@@ -19,14 +19,14 @@
 <div class="mouse-circle"></div>
 <div class="ml-64 flex-1 p-8 pt-4 bg-gray-100">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-6 gap-4">
+    <div class="flex justify-between items-center mb-3 gap-4">
         <h1 class="text-2xl font-medium text-gray-600 whitespace-nowrap">Add Bookings</h1>
     </div>
 
     <!-- Flex Container for Form and Map -->
-    <div class="flex flex-wrap gap-4 mb-4">
-        <!-- Form Container -->
-        <div class="flex-1 min-w-[300px] bg-white p-6 rounded-lg shadow-md">
+    <div class="flex flex-wrap gap-4">
+        <!-- Left Side: Form Container -->
+        <div class="flex-1 min-w-[300px] bg-white px-6 py-3 rounded-lg shadow-md overflow-y-auto max-h-[800px]">
             <form id="bookingForm" class="bg-white">
                 <!-- Booking Date and Customer on Same Line -->
                 <div class="flex gap-4 mb-4">
@@ -77,14 +77,20 @@
             </form>
         </div>
 
-        <!-- Map Container -->
-        <div class="flex-1 min-w-[300px]">
-            <div id="map" style="height: 800px; width: 100%;"></div>
+        <!-- Right Side: Route Info & Map Container -->
+        <div class="flex-1 min-w-[300px] flex flex-col gap-4">
+            <!-- Route Information (Fixed 50% height) -->
+            <div id="routeInfo" class="bg-white p-4 border-gray-300 border rounded-lg shadow-lg overflow-y-auto h-[40vh]"></div>
+
+            <!-- Map Container (Fixed 50% height) -->
+            <div id="map" class="rounded-lg shadow-md h-[50vh]" style="width: 100%;"></div>
         </div>
+
     </div>
 
+
     <!-- Route Information -->
-    <div id="routeInfo" class="bg-white p-4 rounded-lg shadow-md"></div>
+<%--    <div id="routeInfo" class="bg-white p-4 rounded-lg shadow-md"></div>--%>
 </div>
 </body>
 </html>

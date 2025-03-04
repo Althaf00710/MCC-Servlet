@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                          alt="${cabType.typeName}" 
                          class="w-full h-full object-contain">
                 </div>
-                <h3 class="text-lg font-bold text-gray-700 mt-8 mb-1">${cabType.typeName}</h3>
+                <h3 class="text-lg font-semibold text-gray-700 mt-8 mb-1">${cabType.typeName}</h3>
                 <div class="flex justify-center items-center gap-3 text-gray-600 text-sm mb-3 font-semibold">
                     <div class="flex items-center gap-1">
                         <img src="${window.location.origin}/megacitycab_war_exploded/views/static/images/seat.png" class="w-4 h-4">
@@ -208,20 +208,104 @@ document.addEventListener("DOMContentLoaded", async function () {
     function displayRouteInfo(response) {
         const route = response.routes[0];
         const legs = route.legs;
-        let totalDistance = 0;
-        let infoHtml = "<h3>Route Information</h3><ul>";
+        const bookingDateTime = new Date(document.getElementById("bookingDate").value);
+        let currentTime = new Date(bookingDateTime);
 
+        let infoHtml = `
+        <div class="route-steps">
+            <h3 class="text-lg font-semibold mb-4">Journey Details</h3>
+            <div class="flex flex-col gap-4">`;
+
+        // Process Pickup and Stops
         legs.forEach((leg, index) => {
-            const distance = leg.distance.text;
-            const duration = leg.duration.text;
-            totalDistance += leg.distance.value;
-            const from = index === 0 ? "Pickup" : `Stop ${index}`;
-            const to = index === legs.length - 1 ? "Drop" : `Stop ${index + 1}`;
-            infoHtml += `<li><strong>${from} to ${to}:</strong> ${distance}, ${duration}</li>`;
+            const isFirst = index === 0;
+            const isLast = index === legs.length - 1;
+            const waitMinutes = !isFirst ?
+                parseInt(document.querySelectorAll('#stopsContainer input[type="number"]')[index-1]?.value || 0) : 0;
+
+            // Step Header (Pickup/Stop)
+            infoHtml += `
+            <div class="step">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center">
+                        ${isFirst ? 'P' : index}
+                    </div>
+                    <div>
+                        <span class="font-semibold">${isFirst ? 'Pickup' : `Stop ${index}`}</span>
+                        <span class="text-sm text-gray-500 ml-2">${leg.start_address}</span>
+                    </div>
+                </div>`;
+
+            // Travel Details
+            infoHtml += `
+                <div class="ml-8 pl-4 border-l-2 border-gray-200">
+                    <div class="my-2 text-sm">
+                        <span class="font-medium">Arrival:</span> 
+                        ${currentTime.toLocaleDateString()} 
+                        ${currentTime.toLocaleTimeString()}
+                    </div>
+                    <div class="flex gap-4 text-sm text-gray-600">
+                        <div>
+                            <span class="font-medium">Distance:</span> 
+                            ${leg.distance.text}
+                        </div>
+                        <div>
+                            <span class="font-medium">Travel Time:</span> 
+                            ${leg.duration.text}
+                        </div>
+                    </div>`;
+
+            // Add wait time for stops (except pickup)
+            if (!isFirst) {
+                infoHtml += `
+                    <div class="mt-2 text-sm">
+                        <span class="font-medium">Wait Time:</span> 
+                        ${waitMinutes} mins
+                        <span class="ml-4">
+                            (Departure: ${new Date(currentTime.getTime() + waitMinutes * 60000).toLocaleTimeString()})
+                        </span>
+                    </div>`;
+            }
+
+            infoHtml += `</div></div>`;
+
+            // Update current time: arrival time + travel time + wait time
+            currentTime = new Date(currentTime.getTime() +
+                leg.duration.value * 1000 +
+                (waitMinutes * 60000));
         });
 
-        const totalKm = (totalDistance / 1000).toFixed(2);
-        infoHtml += `</ul><p><strong>Total Distance:</strong> ${totalKm} km</p>`;
+        // Add Drop location
+        const lastLeg = legs[legs.length - 1];
+        infoHtml += `
+            <div class="step">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
+                        D
+                    </div>
+                    <div>
+                        <span class="font-semibold">Drop</span>
+                        <span class="text-sm text-gray-500 ml-2">${lastLeg.end_address}</span>
+                    </div>
+                </div>
+                <div class="ml-8 pl-4 border-l-2 border-gray-200">
+                    <div class="my-2 text-sm">
+                        <span class="font-medium">Arrival:</span> 
+                        ${currentTime.toLocaleDateString()} 
+                        ${currentTime.toLocaleTimeString()}
+                    </div>
+                </div>
+            </div>`;
+
+        // Total Distance
+        infoHtml += `
+            </div>
+            <div class="mt-4 p-2 bg-gray-50 rounded">
+                <span class="font-semibold">Total Distance:</span> 
+                ${(route.legs.reduce((sum, leg) => sum + leg.distance.value, 0) / 1000).toFixed(2)} km
+            </div>
+        </div>`;
+
         document.getElementById("routeInfo").innerHTML = infoHtml;
     }
 
