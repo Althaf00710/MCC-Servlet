@@ -3,7 +3,9 @@ package com.example.megacitycab.controllers.booking;
 import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.interfaces.booking.BookingDAO;
 import com.example.megacitycab.models.booking.Booking;
-import com.google.gson.Gson;
+import com.example.megacitycab.models.booking.Stop;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -93,9 +95,48 @@ public class BookingController extends HttpServlet {
 
     private void addBooking(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        Booking booking = gson.fromJson(request.getReader(), Booking.class);
-        boolean success = bookingDAO.add(booking);
-        sendOperationResult(response, success, "Booking added successfully", "Failed to add booking");
+        try {
+            JsonObject jsonObject = JsonParser.parseReader(request.getReader()).getAsJsonObject();
+
+            JsonObject bookingJson = jsonObject.getAsJsonObject();
+            bookingJson.remove("stops");
+            Booking booking = gson.fromJson(bookingJson, Booking.class);
+
+            JsonArray stopsArray = jsonObject.getAsJsonArray("stops");
+            List<Stop> stops = gson.fromJson(stopsArray, new TypeToken<List<Stop>>(){}.getType());
+
+            // Validate at least one stop
+            if (stops == null || stops.isEmpty()) {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "At least one stop is required.");
+                return;
+            }
+
+            boolean success = bookingDAO.add(booking, stops);
+
+            sendOperationResult(response, success,
+                    "Booking with stops added successfully",
+                    "Failed to add booking with stops");
+
+        } catch (JsonSyntaxException | IllegalStateException e) {
+            sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid JSON format: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Error processing request: " + e.getMessage());
+        }
+    }
+
+    // Helper method for error responses
+    private void sendErrorResponse(HttpServletResponse response, int statusCode, String message)
+            throws IOException {
+        response.setStatus(statusCode);
+        response.setContentType("application/json");
+        JsonObject errorResponse = new JsonObject();
+        errorResponse.addProperty("success", false);
+        errorResponse.addProperty("message", message);
+        response.getWriter().write(gson.toJson(errorResponse));
     }
 
     private void updateBooking(HttpServletRequest request, HttpServletResponse response)
@@ -134,3 +175,33 @@ public class BookingController extends HttpServlet {
         response.getWriter().write("{\"error\":\"" + ex.getMessage() + "\"}");
     }
 }
+
+//{
+//        "cabId": 1,
+//        "customerId": 1,
+//        "userId": 1,
+//        "bookingDateTime": "2023-08-01T12:00:00",
+//        "status": "CONFIRMED",
+//        "pickupLocation": "123 Main St",
+//        "longitude": 79.8612,
+//        "latitude": 6.9271,
+//        "placeId": "ChIJ123...",
+//        "stops": [
+//        {
+//        "stopLocation": "123 Main St",
+//        "longitude": 79.8612,
+//        "latitude": 6.9271,
+//        "placeId": "ChIJ123...",
+//        "distanceFromLastStop": 0.0,
+//        "waitMinutes": 15
+//        },
+//        {
+//        "stopLocation": "456 Oak St",
+//        "longitude": 79.8620,
+//        "latitude": 6.9280,
+//        "placeId": "ChIJ456...",
+//        "distanceFromLastStop": 1.5,
+//        "waitMinutes": 0
+//        }
+//        ]
+//        }

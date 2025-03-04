@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
+    // Existing variable declarations
     const cabTypeSelect = document.getElementById("cabTypeSelect");
     const cabSelect = document.getElementById("cabSelect");
     const addStopBtn = document.getElementById("addStop");
@@ -10,47 +11,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     let map, directionsService, directionsRenderer;
     let customers = []; // Store fetched customer data
 
-    // **Fetch customers from the endpoint**
-    async function fetchCustomers() {
-        try {
-            const response = await fetch(`${window.location.origin}/megacitycab_war_exploded/customers/getCustomers`);
-            if (!response.ok) throw new Error("Failed to fetch customers");
-            customers = await response.json();
-            populateCustomerDropdown(customers);
-        } catch (error) {
-            console.error("Error fetching customers:", error);
-        }
-    }
-
-    // **Populate the customer dropdown**
-    function populateCustomerDropdown(customerList) {
-        customerSelect.innerHTML = '<option value="">Select a Customer</option>';
-        //customerList.classList.add("p-4");
-        customerList.forEach(customer => {
-            const option = document.createElement("option");
-            option.value = customer.id; // Assuming customer has an 'id' field
-            option.textContent = `${customer.registerNumber} | ${customer.name}`;
-            // Add searchable data to a custom attribute
-            option.dataset.search = `${customer.registerNumber} ${customer.name} ${customer.countryCode}${customer.phoneNumber} ${customer.nicNumber}`.toLowerCase();
-            customerSelect.appendChild(option);
-        });
-
-        // Initialize select2 with custom filtering
-        $('#customerSelect').select2({
-            placeholder: "Select a Customer",
-            allowClear: true,
-            matcher: function(params, data) {
-                // If no search term, return all options
-                if ($.trim(params.term) === '') return data;
-                // If no searchable data, skip this option
-                if (typeof data.element.dataset.search === 'undefined') return null;
-                // Filter based on search term
-                if (data.element.dataset.search.indexOf(params.term.toLowerCase()) > -1) return data;
-                return null;
-            }
-        });
-    }
-
+    // **Fetch cab types**
     async function fetchCabTypes() {
         try {
             const response = await fetch(`${window.location.origin}/megacitycab_war_exploded/cabtypes/get`);
@@ -64,37 +25,133 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Display cab types as selectable boxes
+    // **Display cab types as selectable boxes**
     function displayCabTypes(cabTypes) {
         const container = document.getElementById("cabTypeContainer");
         container.innerHTML = ""; // Clear any existing content
         cabTypes.forEach(cabType => {
             const box = document.createElement("div");
-            box.classList.add("cab-type-box", "p-4", "border", "rounded", "cursor-pointer", "hover:border-blue-500", "w-64");
+            box.classList.add(
+                "cab-type-box",
+                "relative",
+                "bg-gray-100",
+                "border-2",
+                "border-orange-400",
+                "rounded-xl",
+                "shadow-lg",
+                "hover:shadow-md",
+                "transition-shadow",
+                "duration-200",
+                "p-2",
+                "text-center",
+                "pt-20",
+                "w-64",
+                "cursor-pointer",
+                "mt-6",
+                "flex-shrink-0"
+            );
             box.dataset.id = cabType.id;
             box.innerHTML = `
-            <img src="${cabType.imageUrl}" alt="${cabType.typeName}" class="w-full h-32 object-cover mb-2">
-            <h3 class="text-lg font-semibold">${cabType.typeName}</h3>
-            <div class="details flex justify-around mt-2">
-                <span><i class="fi-rr-users"></i> ${cabType.capacity}</span>
-                <span><i class="fi-rr-dollar"></i> ${cabType.baseFare}</span>
-                <span><i class="fi-rr-clock"></i> ${cabType.baseWaitTimeFare}</span>
-            </div>
-        `;
+                <!-- Image Container (Bigger Size) -->
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/4 w-60 h-40 z-10">
+                    <img src="${window.location.origin}/megacitycab_war_exploded/${cabType.imageUrl}" 
+                         alt="${cabType.typeName}" 
+                         class="w-full h-full object-contain">
+                </div>
+                <!-- Type Name -->
+                <h3 class="text-lg font-bold text-gray-700 mt-8 mb-1">${cabType.typeName}</h3>
+                <!-- Attributes with Icons -->
+                <div class="flex justify-center items-center gap-3 text-gray-600 text-sm mb-3 font-semibold">
+                    <div class="flex items-center gap-1">
+                        <img src="${window.location.origin}/megacitycab_war_exploded/views/static/images/seat.png" class="w-4 h-4">
+                        <span>${cabType.capacity}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <img src="${window.location.origin}/megacitycab_war_exploded/views/static/images/road.png" class="w-4 h-4">
+                        <span>Rs. ${cabType.baseFare}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <img src="${window.location.origin}/megacitycab_war_exploded/views/static/images/clock.png" class="w-4 h-4">
+                        <span>Rs. ${cabType.baseWaitTimeFare}</span>
+                    </div>
+                </div>
+            `;
             box.addEventListener("click", function() {
                 // Remove selection from all boxes
                 document.querySelectorAll(".cab-type-box").forEach(b => {
-                    b.classList.remove("border-blue-500", "bg-blue-100");
+                    b.classList.remove("border-orange-500", "bg-orange-100");
                 });
-                // Highlight the clicked box and update the hidden input
-                this.classList.add("border-blue-500", "bg-blue-100");
+                // Highlight the clicked box with orange styling
+                this.classList.add("border-orange-500", "bg-orange-100");
                 document.getElementById("selectedCabType").value = this.dataset.id;
+                // Fetch cabs for the selected cab type
+                fetchCabsByType(this.dataset.id);
             });
             container.appendChild(box);
         });
     }
 
-    // **Initialize Google Maps**
+    // **Fetch cabs by cab type ID**
+    async function fetchCabsByType(cabTypeId) {
+        try {
+            const response = await fetch(`${window.location.origin}/megacitycab_war_exploded/cabs/getByType?cabTypeId=${cabTypeId}`);
+            if (!response.ok) throw new Error("Failed to fetch cabs");
+            const cabs = await response.json();
+            populateCabDropdown(cabs);
+        } catch (error) {
+            console.error("Error fetching cabs:", error);
+            document.getElementById("cabSelect").innerHTML = '<option value="">No cabs available</option>';
+        }
+    }
+
+    // **Populate the cab dropdown**
+    function populateCabDropdown(cabs) {
+        const cabSelect = document.getElementById("cabSelect");
+        cabSelect.innerHTML = '<option value="">Select a Cab</option>';
+        cabs.forEach(cab => {
+            const option = document.createElement("option");
+            option.value = cab.id; // Assuming cab has an 'id' field
+            option.textContent = `${cab.cabName} | ${cab.plateNumber}`;
+            cabSelect.appendChild(option);
+        });
+    }
+
+    // Existing fetchCustomers function (unchanged)
+    async function fetchCustomers() {
+        try {
+            const response = await fetch(`${window.location.origin}/megacitycab_war_exploded/customers/getCustomers`);
+            if (!response.ok) throw new Error("Failed to fetch customers");
+            customers = await response.json();
+            populateCustomerDropdown(customers);
+        } catch (error) {
+            console.error("Error fetching customers:", error);
+        }
+    }
+
+    // Existing populateCustomerDropdown function (unchanged)
+    function populateCustomerDropdown(customerList) {
+        customerSelect.innerHTML = '<option value="">Select a Customer</option>';
+        customerList.forEach(customer => {
+            const option = document.createElement("option");
+            option.value = customer.id;
+            option.textContent = `${customer.registerNumber} | ${customer.name}`;
+            option.dataset.search = `${customer.registerNumber} ${customer.name} ${customer.countryCode}${customer.phoneNumber} ${customer.nicNumber}`.toLowerCase();
+            customerSelect.appendChild(option);
+        });
+
+        $('#customerSelect').select2({
+            placeholder: "Select a Customer",
+            allowClear: true,
+            matcher: function(params, data) {
+                if ($.trim(params.term) === '') return data;
+                if (typeof data.element.dataset.search === 'undefined') return null;
+                if (data.element.dataset.search.indexOf(params.term.toLowerCase()) > -1) return data;
+                return null;
+            }
+        });
+    }
+
+    // Existing initMap, setupAutocomplete, updateRoute, displayRouteInfo, and addStopBtn logic (unchanged)
     async function initMap() {
         const keyResponse = await fetch(`${window.location.origin}/megacitycab_war_exploded/getKey`);
         const { apiKey } = await keyResponse.json();
@@ -114,13 +171,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.body.appendChild(script);
     }
 
-    // **Setup Autocomplete for location inputs**
     function setupAutocomplete(input) {
         const autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.addListener("place_changed", updateRoute);
     }
 
-    // **Update the route on the map**
     function updateRoute() {
         if (!pickupLocation.value || !dropLocation.value) return;
 
@@ -144,7 +199,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    // **Display route information**
     function displayRouteInfo(response) {
         const route = response.routes[0];
         const legs = route.legs;
@@ -154,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         legs.forEach((leg, index) => {
             const distance = leg.distance.text;
             const duration = leg.duration.text;
-            totalDistance += leg.distance.value; // in meters
+            totalDistance += leg.distance.value;
             const from = index === 0 ? "Pickup" : `Stop ${index}`;
             const to = index === legs.length - 1 ? "Drop" : `Stop ${index + 1}`;
             infoHtml += `<li><strong>${from} to ${to}:</strong> ${distance}, ${duration}</li>`;
@@ -165,19 +219,33 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("routeInfo").innerHTML = infoHtml;
     }
 
-    // **Add stop functionality**
     addStopBtn.addEventListener("click", function () {
         const stopDiv = document.createElement("div");
-        stopDiv.classList.add("flex", "items-center", "mb-4");
+        stopDiv.classList.add("flex", "items-center", "mb-4", "gap-2");
 
-        const input = document.createElement("input");
-        input.type = "text";
-        input.classList.add("w-full", "p-2", "border", "rounded", "location-input");
-        input.placeholder = "Enter Stop Location";
+        // Input container for location + wait time
+        const inputGroup = document.createElement("div");
+        inputGroup.classList.add("flex", "items-center", "gap-2", "flex-1");
 
+        // Location input
+        const locationInput = document.createElement("input");
+        locationInput.type = "text";
+        locationInput.classList.add("w-full", "p-2", "border", "rounded", "location-input");
+        locationInput.placeholder = "Enter Stop Location";
+
+        // Wait time input
+        const waitInput = document.createElement("input");
+        waitInput.type = "number";
+        waitInput.min = "0";
+        waitInput.value = "0";
+        waitInput.classList.add("w-24", "p-2", "border", "rounded", "bg-white");
+        waitInput.placeholder = "Wait mins";
+        waitInput.title = "Waiting time in minutes";
+
+        // Remove button
         const removeBtn = document.createElement("button");
         removeBtn.type = "button";
-        removeBtn.classList.add("ml-2", "bg-white", "text-red-600", "p-2", "rounded");
+        removeBtn.classList.add("bg-white", "text-red-600", "p-2", "rounded", "hover:bg-red-50");
         removeBtn.innerHTML = '<i class="fi-rr-trash"></i>';
         removeBtn.title = "Remove Stop";
         removeBtn.addEventListener("click", () => {
@@ -185,20 +253,25 @@ document.addEventListener("DOMContentLoaded", async function () {
             updateRoute();
         });
 
-        stopDiv.appendChild(input);
+        // Build structure
+        inputGroup.appendChild(locationInput);
+        inputGroup.appendChild(waitInput);
+        stopDiv.appendChild(inputGroup);
         stopDiv.appendChild(removeBtn);
         stopsContainer.appendChild(stopDiv);
 
-        setupAutocomplete(input);
-        input.addEventListener("change", updateRoute);
+        // Initialize autocomplete for location input
+        setupAutocomplete(locationInput);
+
+        // Add event listeners
+        locationInput.addEventListener("change", updateRoute);
     });
 
-    // **Event listeners**
     pickupLocation.addEventListener("change", updateRoute);
     dropLocation.addEventListener("change", updateRoute);
 
-    // **Initialize everything**
-    fetchCustomers(); // Load customers and initialize dropdown
+    // Initialize everything
+    fetchCustomers();
     fetchCabTypes();
-    initMap();        // Initialize the map
+    initMap();
 });

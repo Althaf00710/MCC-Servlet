@@ -5,6 +5,7 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/mouseAnimation.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/scrollBar.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/AdminCabBooking.css">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -16,7 +17,7 @@
 <body>
 <%@ include file="../common/navBar.jsp" %>
 <div class="mouse-circle"></div>
-<div class="ml-64 flex-1 p-8 pt-4">
+<div class="ml-64 flex-1 p-8 pt-4 bg-gray-100">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6 gap-4">
         <h1 class="text-2xl font-medium text-gray-600 whitespace-nowrap">Add Bookings</h1>
@@ -63,7 +64,7 @@
 
                 <!-- Cab Type Selection -->
                 <label class="block text-gray-600">Cab Type</label>
-                <div id="cabTypeContainer" class="flex flex-wrap gap-4 mb-4"></div>
+                <div id="cabTypeContainer" class="flex flex-nowrap gap-4 mb-4 overflow-x-auto scroll-smooth whitespace-nowrap px-4 py-2"></div>
                 <input type="hidden" id="selectedCabType" name="cabTypeId" required>
 
                 <!-- Cab Selection -->

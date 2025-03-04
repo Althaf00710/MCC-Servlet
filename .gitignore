@@ -39,3 +39,6 @@ build/
 
 ### Sensitive ###
 src/main/resources/application.properties
+
+src/main/webapp/web/WEB-INF/web.xml
+src/main/webapp/WEB-INF/web.xml

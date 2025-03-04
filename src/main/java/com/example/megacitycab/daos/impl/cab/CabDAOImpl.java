@@ -25,11 +25,11 @@ public class CabDAOImpl extends BaseDAOImpl<Cab> implements CabDAO {
     private static final String CHECK_CAB_SQL = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE registrationNumber = ?";
     private static final String GET_CAB_BY_CAB_TYPE_SQL =
             "SELECT c.id, c.cabBrandId, c.cabTypeId, " +
-                    "CONCAT(b.brandName, ' ', c.cabName) AS cabFullName, " +
+                    "CONCAT(b.brandName, ' ', c.cabName) AS cabName, " +
                     "c.registrationNumber, c.plateNumber, c.status, c.lastService " +
                     "FROM " + TABLE_NAME + " c " +
                     "JOIN CabBrand b ON c.cabBrandId = b.id " +
-                    "WHERE c.cabTypeId = ?";
+                    "WHERE c.cabTypeId = ? AND c.status = \"Available\"";
 
     @Override
     protected Cab mapResultSetToEntity(ResultSet rs) throws SQLException {

@@ -3,6 +3,7 @@ package com.example.megacitycab.daos.impl.booking;
 import com.example.megacitycab.daos.BaseDAOImpl;
 import com.example.megacitycab.daos.interfaces.booking.BookingDAO;
 import com.example.megacitycab.models.booking.Booking;
+import com.example.megacitycab.models.booking.Stop;
 import com.example.megacitycab.utils.DbConfig;
 import com.example.megacitycab.utils.NumberGenerator;
 
@@ -66,6 +67,99 @@ public class BookingDAOImpl extends BaseDAOImpl<Booking> implements BookingDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public boolean add(Booking entity, List<Stop> stops) {
+        if (stops == null || stops.isEmpty()) {
+            throw new IllegalArgumentException("At least one stop is required");
+        }
+
+        Connection conn = null;
+        try {
+            conn = dbConfig.getConnection();
+            conn.setAutoCommit(false);  // Start transaction
+
+            // 1. Insert Booking
+            String bookingSql = "INSERT INTO booking (bookingNumber, cabId, customerId, userId, bookingDateTime, " +
+                    "status, pickupLocation, longitude, latitude, placeId) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement bookingStmt = conn.prepareStatement(bookingSql, Statement.RETURN_GENERATED_KEYS)) {
+                bookingStmt.setString(1, numberGenerator.generateBookingNumber());
+                bookingStmt.setInt(2, entity.getCabId());
+                bookingStmt.setInt(3, entity.getCustomerId());
+                bookingStmt.setInt(4, entity.getUserId());
+                bookingStmt.setTimestamp(5, new Timestamp(entity.getBookingDateTime().getTime()));
+                bookingStmt.setString(6, entity.getStatus());
+                bookingStmt.setString(7, entity.getPickupLocation());
+                bookingStmt.setDouble(8, entity.getLongitude());
+                bookingStmt.setDouble(9, entity.getLatitude());
+                bookingStmt.setString(10, entity.getPlaceId());
+
+                int affectedRows = bookingStmt.executeUpdate();
+                if (affectedRows == 0) {
+                    conn.rollback();
+                    return false;
+                }
+
+                try (ResultSet rs = bookingStmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        entity.setId(rs.getInt(1));
+                    } else {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            // 2. Insert Stops
+            String stopSql = "INSERT INTO stop (bookingId, stopLocation, longitude, latitude, " +
+                    "placeId, distanceFromLastStop, waitMinutes) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement stopStmt = conn.prepareStatement(stopSql)) {
+                for (Stop stop : stops) {
+                    stopStmt.setInt(1, entity.getId());
+                    stopStmt.setString(2, stop.getStopLocation());
+                    stopStmt.setDouble(3, stop.getLongitude());
+                    stopStmt.setDouble(4, stop.getLatitude());
+                    stopStmt.setString(5, stop.getPlaceId());
+                    stopStmt.setDouble(6, stop.getDistanceFromLastStop());
+                    stopStmt.setInt(7, stop.getWaitMinutes());
+                    stopStmt.addBatch();
+                }
+
+                int[] batchResults = stopStmt.executeBatch();
+                for (int result : batchResults) {
+                    if (result == PreparedStatement.EXECUTE_FAILED) {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

@@ -6,3 +6,9 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+### Sensitive ###
+src/main/resources/application.properties
+
+src/main/webapp/web/WEB-INF/web.xml
+src/main/webapp/WEB-INF/web.xml

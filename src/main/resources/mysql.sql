@@ -67,6 +67,14 @@ CREATE TABLE Cab (
                      FOREIGN KEY (cabTypeId) REFERENCES CabType(id) ON DELETE CASCADE
 );
 
+SELECT c.id, c.cabBrandId, c.cabTypeId,
+       CONCAT(b.brandName, ' ', c.cabName) AS cabFullName,
+       c.registrationNumber, c.plateNumber, c.status, c.lastService
+FROM Cab c
+         JOIN CabBrand b ON c.cabBrandId = b.id
+WHERE c.cabTypeId = 1 AND c.status = "Available";
+
+
 SELECT * FROM cab;
 
 CREATE TABLE CabAssign (
