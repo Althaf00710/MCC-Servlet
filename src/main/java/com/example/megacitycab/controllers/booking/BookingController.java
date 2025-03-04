@@ -4,7 +4,9 @@ import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.interfaces.booking.BookingDAO;
 import com.example.megacitycab.models.booking.Booking;
 import com.example.megacitycab.models.booking.Stop;
+
 import com.google.gson.*;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -97,12 +99,12 @@ public class BookingController extends HttpServlet {
             throws IOException {
         try {
             JsonObject jsonObject = JsonParser.parseReader(request.getReader()).getAsJsonObject();
-
-            JsonObject bookingJson = jsonObject.getAsJsonObject();
-            bookingJson.remove("stops");
-            Booking booking = gson.fromJson(bookingJson, Booking.class);
-
             JsonArray stopsArray = jsonObject.getAsJsonArray("stops");
+            JsonObject bookingJson = jsonObject.deepCopy();
+            bookingJson.remove("stops");
+
+            // Now parse both parts
+            Booking booking = gson.fromJson(bookingJson, Booking.class);
             List<Stop> stops = gson.fromJson(stopsArray, new TypeToken<List<Stop>>(){}.getType());
 
             // Validate at least one stop
