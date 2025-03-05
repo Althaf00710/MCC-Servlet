@@ -59,8 +59,6 @@ public class StopDAOImpl extends BaseDAOImpl<Stop> implements StopDAO {
         return false;
     }
 
-
-
     @Override
     public Stop getById(int id) {
         return super.getById(id, TABLE_NAME);

@@ -1,5 +1,6 @@
 package com.example.megacitycab.controllers.booking;
 
+import com.example.megacitycab.DTOs.BookingDetailDTO;
 import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.interfaces.booking.BookingDAO;
 import com.example.megacitycab.models.booking.Booking;
@@ -13,8 +14,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @WebServlet("/booking/*")
@@ -42,6 +45,9 @@ public class BookingController extends HttpServlet {
                 case "/search":
                     searchBookings(request, response);
                     break;
+                case "/booking-details":
+                    getBookingWithStops(request, response);
+                    break;
                 default:
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -54,6 +60,7 @@ public class BookingController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getPathInfo();
+        HttpSession session = request.getSession();
         if (action == null) action = "/add";
 
         try {
@@ -61,8 +68,8 @@ public class BookingController extends HttpServlet {
                 case "/add":
                     addBooking(request, response);
                     break;
-                case "/update":
-                    updateBooking(request, response);
+                case "/updateStatus":
+                    updateStatus(request, response, session);
                     break;
                 case "/delete":
                     deleteBooking(request, response);
@@ -77,15 +84,41 @@ public class BookingController extends HttpServlet {
 
     private void listBookings(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Booking> bookings = bookingDAO.getAll();
-        request.setAttribute("bookings", bookings);
-        request.getRequestDispatcher("/views/sites/admin/booking/viewBooking.jsp").forward(request, response);
+        try {
+            String status = request.getParameter("status");
+            String dateParam = request.getParameter("bookingDateTime");
+            Timestamp bookingDateTime = null;
+
+            if (dateParam != null && !dateParam.isEmpty()) {
+                try {
+                    bookingDateTime = Timestamp.valueOf(dateParam + " 00:00:00"); // Convert only if valid
+                } catch (IllegalArgumentException e) {
+                    bookingDateTime = null; // Ensure it's null if conversion fails
+                }
+            }
+
+            List<Booking> bookings = bookingDAO.getAll(bookingDateTime, status);
+
+            request.setAttribute("bookings", bookings);
+            request.getRequestDispatcher("/views/sites/admin/booking/viewBooking.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving bookings.");
+        }
     }
+
 
     private void getBooking(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Booking booking = bookingDAO.getById(id);
+        sendJsonResponse(response, booking);
+    }
+
+    private void getBookingWithStops(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        BookingDetailDTO booking = bookingDAO.getBookingDetails(id);
         sendJsonResponse(response, booking);
     }
 
@@ -142,11 +175,19 @@ public class BookingController extends HttpServlet {
         response.getWriter().write(gson.toJson(errorResponse));
     }
 
-    private void updateBooking(HttpServletRequest request, HttpServletResponse response)
+    private void updateStatus(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws IOException {
-        Booking booking = gson.fromJson(request.getReader(), Booking.class);
-        boolean success = bookingDAO.update(booking);
-        sendOperationResult(response, success, "Booking updated successfully", "Failed to update booking");
+        int id = Integer.parseInt(request.getParameter("id"));
+        String status = request.getParameter("status");
+
+        if (bookingDAO.updateStatus(id, status)) {
+            session.setAttribute("success", "Cab brand updated successfully!");
+        } else {
+            session.setAttribute("error", "Failed to update cab brand.");
+        }
+
+        response.sendRedirect(request.getContextPath() + "/booking/list");
+
     }
 
     private void deleteBooking(HttpServletRequest request, HttpServletResponse response)

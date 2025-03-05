@@ -74,6 +74,8 @@ FROM Cab c
          JOIN CabBrand b ON c.cabBrandId = b.id
 WHERE c.cabTypeId = 1 AND c.status = "Available";
 
+UPDATE Booking SET status = 'PENDING' WHERE id = 5;
+
 
 SELECT * FROM cab;
 
@@ -186,3 +188,40 @@ FROM Booking b
          LEFT JOIN Customer cu ON b.customerId = cu.id
          LEFT JOIN User u ON b.userId = u.id
 ORDER BY b.id DESC;
+
+SELECT
+    b.pickupLocation AS pickup_location,
+    b.placeId AS pickup_place_id,
+    b.dateTimeCreated AS booking_created,
+    s.stopLocation AS stop_location,
+    s.placeId AS stop_place_id,
+    s.distanceFromLastStop,
+    s.waitMinutes,
+    cd.tax,
+    cd.discount,
+    cd.minAmountForDiscount,
+    ca.driverId AS driver_id,
+    d.name AS driver_name,
+    d.avatarUrl AS driver_avatar,
+    d.phoneNumber AS driver_phone,
+    ct.baseFare,
+    ct.baseWaitTimeFare,
+    ct.typeName AS cab_type,
+    CONCAT(c.countryCode, c.phoneNumber) AS customer_phone,
+    c.email AS customer_email,
+    c.name AS customer_name
+FROM Booking b
+         JOIN Customer c ON b.customerId = c.id
+         JOIN Cab cb ON b.cabId = cb.id
+         JOIN CabType ct ON cb.cabTypeId = ct.id
+         LEFT JOIN Stop s ON b.id = s.bookingId
+         LEFT JOIN CabAssign ca ON cb.id = ca.cabId
+    AND ca.assignDate = (
+        SELECT MAX(assignDate)
+        FROM CabAssign
+        WHERE cabId = cb.id
+    )
+         LEFT JOIN Driver d ON ca.driverId = d.id
+         CROSS JOIN CompanyData cd
+WHERE b.id = 5
+ORDER BY b.id, s.id;
