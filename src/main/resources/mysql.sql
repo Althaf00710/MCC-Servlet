@@ -223,5 +223,5 @@ FROM Booking b
     )
          LEFT JOIN Driver d ON ca.driverId = d.id
          CROSS JOIN CompanyData cd
-WHERE b.id = 5
+WHERE b.id = 8
 ORDER BY b.id, s.id;

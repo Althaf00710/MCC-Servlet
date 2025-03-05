@@ -407,9 +407,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             longitude: dropPlace.geometry.location.lng(),
             latitude: dropPlace.geometry.location.lat(),
             placeId: dropPlace.place_id,
-            distanceFromLastStop: legs[intermediateStops.length]?.distance?.value
-                ? (legs[intermediateStops.length].distance.value / 1000).toFixed(2)
-                : "0.00", // Distance from last stop to drop-off
+            distanceFromLastStop: legs.length > 0
+                ? parseFloat((legs[legs.length - 1].distance.value / 1000).toFixed(2))
+                : 0.00,
             waitMinutes: 0
         };
 
