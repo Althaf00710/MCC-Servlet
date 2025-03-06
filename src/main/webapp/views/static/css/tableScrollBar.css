@@ -25,8 +25,8 @@ tr {
 }
 
 .dropdown-row td {
-    padding: 1rem;
-    text-align: center;
+    /*padding: 1rem;*/
+    /*text-align: center;*/
 }
 
 @keyframes slideDown {
@@ -46,21 +46,21 @@ tr {
     transition: transform 0.3s ease-in-out;
 }
 
-.step {
-    position: relative;
-    padding-left: 2rem;
-    margin-left: 1rem;
-}
+/*.step {*/
+/*    position: relative;*/
+/*    padding-left: 2rem;*/
+/*    margin-left: 1rem;*/
+/*}*/
 
-.step::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 24px;
-    bottom: -24px;
-    width: 2px;
-    background-color: #e5e7eb;
-}
+/*.step::before {*/
+/*    content: '';*/
+/*    position: absolute;*/
+/*    left: 0;*/
+/*    top: 24px;*/
+/*    bottom: -24px;*/
+/*    width: 2px;*/
+/*    background-color: #e5e7eb;*/
+/*}*/
 
 .step:last-child::before {
     display: none;
