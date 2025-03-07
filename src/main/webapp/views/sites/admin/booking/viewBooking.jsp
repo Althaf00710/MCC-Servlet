@@ -18,8 +18,10 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/mouseAnimation.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/scrollBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/tableScrollBar.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/views/static/css/billingPopup.css">
         <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
         <script DEFER src="${pageContext.request.contextPath}/views/static/js/mouseAnimation.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <script src="${pageContext.request.contextPath}/views/static/js/bookingView.js"></script>
@@ -53,7 +55,7 @@
             </div>
 
             <div class="overflow-x-auto bg-white rounded-lg shadow-md">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200 min-h-60">
                     <thead class="bg-gray-200 sticky">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Number</th>
@@ -95,7 +97,7 @@
                                             <div class="flex items-center px-2 py-1 rounded-md hover:bg-gray-100 cursor-pointer filter-option"
                                                  data-filter="CONFIRMED"
                                                  onclick="applyStatusFilter('CONFIRMED')">
-                                                <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+                                                <span class="w-2 h-2 rounded-full bg-blue-400 mr-2"></span>
                                                 Confirmed
                                             </div>
                                             <div class="flex items-center px-2 py-1 rounded-md hover:bg-gray-100 cursor-pointer filter-option"
@@ -190,7 +192,33 @@
                                 }
                             %>
                         </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-500"><%= booking.getStatus() %></td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-500">
+                            <%
+                                String status = booking.getStatus();
+                                String color = ""; // Default color
+                                switch (status) {
+                                    case "PENDING":
+                                        color = "bg-gray-500";
+                                        break;
+                                    case "CONFIRMED":
+                                        color = "bg-blue-400";
+                                        break;
+                                    case "ON TRIP":
+                                        color = "bg-orange-400";
+                                        break;
+                                    case "COMPLETED":
+                                        color = "bg-green-400";
+                                        break;
+                                    case "CANCELLED":
+                                        color = "bg-red-500";
+                                        break;
+                                    default:
+                                        color = "bg-gray-500";
+                                        break;
+                                }
+                            %>
+                            <div class="w-2 h-2 rounded-full inline-block <%= color %> mr-1"></div> <%= status %>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
                             <button class="dropdown-button text-gray-500 hover:cursor-pointer bg-gray-100 px-4 py-1 hover:bg-gray-200 rounded-lg">
                                 <i id="caret-icon" class="fi fi-rr-caret-down transition-transform duration-300"></i>
@@ -209,20 +237,21 @@
                                 <button type="submit" class="text-orange-500 hover:cursor-pointer bg-orange-100 hover:bg-orange-200 px-8 py-1 rounded-full font-semibold">Start</button>
                             </form>
                             <% } else if (booking.getStatus().equalsIgnoreCase("ON TRIP")) { %>
-                            <form action="${pageContext.request.contextPath}/booking/updateStatus" method="POST" style="display: inline;">
-                                <input type="hidden" name="id" value="<%= booking.getId() %>">
-                                <input type="hidden" name="status" value="COMPLETED">
-                                <button type="submit" class="text-green-500 hover:cursor-pointer bg-green-100 hover:bg-green-200 px-5 py-1 rounded-full font-semibold">Complete</button>
-                            </form>
+                            <button type="button" class="completeButton text-green-500 hover:cursor-pointer bg-green-100 hover:bg-green-200 px-5 py-1 rounded-full font-semibold"
+                                    onclick="openCompleteModal('<%= booking.getId() %>', '<%= booking.getBookingNumber() %>')">
+                                Complete
+                            </button>
                             <% } %>
 
-<%--                            <% if (!((booking.getStatus().equalsIgnoreCase("CANCELLED")) || (booking.getStatus().equalsIgnoreCase("COMPLETED")))) { %>--%>
-<%--                            <form action="${pageContext.request.contextPath}/booking/updateStatus" method="POST" style="display: inline;">--%>
-<%--                                <input type="hidden" name="id" value="<%= booking.getId() %>">--%>
-<%--                                <input type="hidden" name="status" value="CANCELLED">--%>
-<%--                                <button type="submit" class="text-red-500">Cancel</button>--%>
-<%--                            </form>--%>
-<%--                            <% } %>--%>
+                            <% if (!((booking.getStatus().equalsIgnoreCase("CANCELLED")) || (booking.getStatus().equalsIgnoreCase("COMPLETED")))) { %>
+                            <form id="cancelForm-<%= booking.getId() %>" action="${pageContext.request.contextPath}/booking/updateStatus" method="POST" style="display: inline;">
+                                <input type="hidden" name="id" value="<%= booking.getId() %>">
+                                <input type="hidden" name="status" value="CANCELLED">
+                                <button type="button" class="text-white bg-red-500 hover:bg-red-600 p-1.5 rounded-full text-sm ml-4" onclick="confirmCancel('<%= booking.getId() %>')">
+                                    <i class="fi fi-rr-cross text-xs font-bold"></i>
+                                </button>
+                            </form>
+                            <% } %>
                         </td>
                     </tr>
                     <%
@@ -239,6 +268,20 @@
                 </table>
             </div>
         </div>
-    </body>
 
+        <!-- Modal -->
+        <div id="modalOverlay" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden transition-opacity duration-300" onclick="closeModal()"></div>
+        <div id="completeModal" class="fixed inset-y-0 right-0 my-4 mr-4 w-108 h-[calc(100vh-40px)] rounded-3xl bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out hidden z-101">
+            <div id="modalContent" class="p-6 overflow-y-auto h-full">
+
+            </div>
+        </div>
+
+        <div id="PaymentModal" class="fixed bottom-0 right-0 my-6 mr-118 w-108 h-[40vh] rounded-3xl bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out hidden z-100">
+            <div id="paymentModalContent" class="p-6 overflow-y-auto h-full">
+
+            </div>
+        </div>
+
+    </body>
 </html>

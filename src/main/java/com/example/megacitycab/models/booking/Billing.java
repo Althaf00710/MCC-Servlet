@@ -8,8 +8,8 @@ public class Billing {
     private double totalDistanceFare;
     private double totalWaitFare;
     private Date billDate;
-    private double tax;
-    private double discount;
+    private double tax; //tax percentage
+    private double discount; //discount percentage
     private int userId;
     private double cash;
     private double deposit;

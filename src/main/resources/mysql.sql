@@ -135,15 +135,15 @@ CREATE TABLE Billing (
                          tax DOUBLE NOT NULL,
                          discount DOUBLE NOT NULL,
                          userId INT NOT NULL,
-                         cash DOUBLE,
-                         deposit DOUBLE,
-                         card DOUBLE,
-                         totalAmount DOUBLE GENERATED ALWAYS AS (
-                             ((totalDistanceFare + totalWaitFare) * (1 - discount / 100)) * (1 + tax / 100)
-                             ) STORED,
+                         cash DOUBLE DEFAULT 0,
+                         deposit DOUBLE DEFAULT 0,
+                         card DOUBLE DEFAULT 0,
+                         totalAmount DOUBLE DEFAULT 0,
                          FOREIGN KEY (bookingId) REFERENCES Booking(id) ON DELETE CASCADE,
                          FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
 );
+
+SELECT * FROM billing;
 
 CREATE TABLE Review (
                         id INT AUTO_INCREMENT PRIMARY KEY,
