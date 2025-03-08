@@ -524,7 +524,7 @@ public class BookingDAOImpl extends BaseDAOImpl<Booking> implements BookingDAO {
         String sql = "SELECT DATE(billDate) AS BillDate, SUM(totalAmount) AS TotalSales " +
                 "FROM Billing " +
                 "GROUP BY DATE(billDate) " +
-                "ORDER BY BillDate ASC";
+                "ORDER BY BillDate ASC LIMIT 30";
 
         try (Connection connection = dbConfig.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
