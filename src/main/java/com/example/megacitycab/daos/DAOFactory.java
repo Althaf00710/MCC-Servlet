@@ -49,4 +49,5 @@ public class DAOFactory {
     public static BookingDAO getBookingDAO() { return new BookingDAOImpl(); }
 
     public static StopDAO getStopDAO() { return new StopDAOImpl(); }
+
 }

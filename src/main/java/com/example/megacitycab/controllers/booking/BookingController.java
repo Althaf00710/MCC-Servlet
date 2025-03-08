@@ -1,6 +1,9 @@
 package com.example.megacitycab.controllers.booking;
 
 import com.example.megacitycab.DTOs.BookingDetailDTO;
+import com.example.megacitycab.DTOs.BookingRecentDTO;
+import com.example.megacitycab.DTOs.DailySalesDTO;
+import com.example.megacitycab.DTOs.TopBookedCabTypeDTO;
 import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.interfaces.booking.BookingDAO;
 import com.example.megacitycab.models.booking.Booking;
@@ -47,6 +50,21 @@ public class BookingController extends HttpServlet {
                     break;
                 case "/booking-details":
                     getBookingWithStops(request, response);
+                    break;
+                case "/booking-count":
+                    getBookingTodayCount(request, response);
+                    break;
+                case "/new-booking":
+                    getBookingNew(request, response);
+                    break;
+                case "/get-recent-pickup":
+                    getRecentPickup(request, response);
+                    break;
+                case "/get-topCabType":
+                    getTopCabType(request, response);
+                    break;
+                case "/getDailySales":
+                    getDailySales(request, response);
                     break;
                 default:
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -107,6 +125,46 @@ public class BookingController extends HttpServlet {
         }
     }
 
+    private void getBookingTodayCount(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int total = bookingDAO.getTodayBookingCount();
+        sendJsonResponse(response, total);
+    }
+
+    private void getDailySales(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<DailySalesDTO> sales = bookingDAO.getDailySales();
+        sendJsonResponse(response, sales);
+    }
+
+    private void getTopCabType(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<TopBookedCabTypeDTO> cabTypes= bookingDAO.getTop5BookedCabTypes();
+        sendJsonResponse(response, cabTypes);
+    }
+
+    private void getRecentPickup(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<BookingRecentDTO> booking = bookingDAO.getRecentBookingsWithStops();
+        sendJsonResponse(response, booking);
+    }
+
+    private void getBookingNew(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String status = request.getParameter("status");
+        String dateParam = request.getParameter("bookingDateTime");
+        Timestamp bookingDateTime = null;
+
+        if (dateParam != null && !dateParam.isEmpty()) {
+            try {
+                bookingDateTime = Timestamp.valueOf(dateParam + " 00:00:00"); // Convert only if valid
+            } catch (IllegalArgumentException e) {
+                bookingDateTime = null; // Ensure it's null if conversion fails
+            }
+        }
+        List<Booking> bookings = bookingDAO.getAll(bookingDateTime, status);
+        sendJsonResponse(response, bookings);
+    }
 
     private void getBooking(HttpServletRequest request, HttpServletResponse response)
             throws IOException {

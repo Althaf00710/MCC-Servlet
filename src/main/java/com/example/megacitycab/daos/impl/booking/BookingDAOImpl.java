@@ -413,5 +413,137 @@ public class BookingDAOImpl extends BaseDAOImpl<Booking> implements BookingDAO {
         return List.of();
     }
 
+    @Override
+    public int getTodayBookingCount() {
+        String query = "SELECT COUNT(*) AS TodayBookingCount FROM Booking WHERE DATE(bookingDateTime) = CURRENT_DATE";
+        int bookingCount = 0;
+
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                bookingCount = rs.getInt("TodayBookingCount");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Log the exception as needed
+        }
+        return bookingCount;
+    }
+
+    @Override
+    public List<BookingRecentDTO> getRecentBookingsWithStops() {
+        String query = "SELECT "
+                + "b.bookingNumber, "
+                + "b.placeId AS BookingPlaceId, "
+                + "s.placeId AS StopPlaceId, "
+                + "b.bookingDateTime AS BookingDateTime "
+                + "FROM Booking b "
+                + "JOIN Stop s ON b.id = s.bookingId "
+                + "WHERE b.bookingDateTime = ( "
+                + "    SELECT MIN(bookingDateTime) "
+                + "    FROM Booking "
+                + "    WHERE bookingDateTime >= CURRENT_TIMESTAMP "
+                + ") "
+                + "ORDER BY b.bookingDateTime ASC";
+
+        List<BookingRecentDTO> bookingList = new ArrayList<>();
+        BookingRecentDTO currentBooking = null;
+        List<String> stopPlaceIds = new ArrayList<>();
+
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String bookingNumber = rs.getString("bookingNumber");
+                String bookingPlaceId = rs.getString("BookingPlaceId");
+                Timestamp bookingDateTime = rs.getTimestamp("BookingDateTime");
+                String stopPlaceId = rs.getString("StopPlaceId");
+
+                if (currentBooking == null || !currentBooking.getBookingNumber().equals(bookingNumber)) {
+                    if (currentBooking != null) {
+                        currentBooking.setStopPlaceIds(stopPlaceIds);
+                        bookingList.add(currentBooking);
+                    }
+
+                    stopPlaceIds = new ArrayList<>();
+                    currentBooking = new BookingRecentDTO();
+                    currentBooking.setBookingNumber(bookingNumber);
+                    currentBooking.setBookingPlaceId(bookingPlaceId);
+                    currentBooking.setBookingDateTime(bookingDateTime);
+                }
+
+                stopPlaceIds.add(stopPlaceId);
+            }
+
+            if (currentBooking != null) {
+                currentBooking.setStopPlaceIds(stopPlaceIds);
+                bookingList.add(currentBooking);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookingList;
+    }
+
+    @Override
+    public List<TopBookedCabTypeDTO> getTop5BookedCabTypes() {
+        List<TopBookedCabTypeDTO> topCabTypes = new ArrayList<>();
+        String sql = "SELECT ct.typeName AS CabType, COUNT(b.id) AS BookingsCount " +
+                "FROM Booking b " +
+                "JOIN Cab c ON b.cabId = c.id " +
+                "JOIN CabType ct ON c.cabTypeId = ct.id " +
+                "GROUP BY ct.typeName " +
+                "ORDER BY BookingsCount DESC " +
+                "LIMIT 5";
+
+        try (Connection connection = dbConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            // Process the result set
+            while (resultSet.next()) {
+                TopBookedCabTypeDTO topCabType = new TopBookedCabTypeDTO();
+                topCabType.setCabType(resultSet.getString("CabType"));
+                topCabType.setBookingsCount(resultSet.getInt("BookingsCount"));
+                topCabTypes.add(topCabType);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topCabTypes;
+    }
+
+    @Override
+    public List<DailySalesDTO> getDailySales() {
+        List<DailySalesDTO> dailySales = new ArrayList<>();
+        String sql = "SELECT DATE(billDate) AS BillDate, SUM(totalAmount) AS TotalSales " +
+                "FROM Billing " +
+                "GROUP BY DATE(billDate) " +
+                "ORDER BY BillDate ASC";
+
+        try (Connection connection = dbConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            // Process the result set
+            while (resultSet.next()) {
+                DailySalesDTO dailySale = new DailySalesDTO();
+                dailySale.setBillDate(resultSet.getDate("BillDate"));
+                dailySale.setTotalSales(resultSet.getDouble("TotalSales"));
+                dailySales.add(dailySale);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Log the exception and handle it as needed
+        }
+
+        return dailySales;
+    }
 
 }

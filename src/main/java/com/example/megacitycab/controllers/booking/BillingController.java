@@ -1,7 +1,10 @@
 package com.example.megacitycab.controllers.booking;
 
+import com.example.megacitycab.DTOs.BillingListDTO;
 import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.interfaces.booking.BillingDAO;
+import com.example.megacitycab.daos.interfaces.booking.BookingDAO;
+import com.example.megacitycab.models.Cab.CabBrand;
 import com.example.megacitycab.models.booking.Billing;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
@@ -10,10 +13,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/billing/*")
 public class BillingController extends HttpServlet {
     private final BillingDAO billingDAO = DAOFactory.getBillingDAO();
+    private final BookingDAO bookingDAO = DAOFactory.getBookingDAO();
     private final Gson gson = new Gson();
 
     @Override
@@ -24,11 +29,17 @@ public class BillingController extends HttpServlet {
 
         try {
             switch (action) {
+                case "/list":
+                    listBills(request, response);
+                    break;
                 case "/get":
                     getBilling(request, response);
                     break;
                 case "/by-booking":
                     getBillingByBooking(request, response);
+                    break;
+                case "/today-total":
+                    getTodayTotal(request, response);
                     break;
                 default:
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -63,6 +74,13 @@ public class BillingController extends HttpServlet {
         }
     }
 
+    private void listBills(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<BillingListDTO> bills = billingDAO.getTableData();
+        request.setAttribute("bills", bills);
+        request.getRequestDispatcher("/views/sites/admin/booking/viewBills.jsp").forward(request, response);
+    }
+
     private void getBilling(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -93,8 +111,9 @@ public class BillingController extends HttpServlet {
 
     private void deleteBilling(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        boolean success = billingDAO.delete(id);
+        int billingId = Integer.parseInt(request.getParameter("billingId"));
+        int bookingId = Integer.parseInt(request.getParameter("bookingId"));
+        boolean success = billingDAO.delete(billingId) && bookingDAO.updateStatus(bookingId, "ON TRIP");
         sendOperationResult(response, success, "Billing deleted successfully", "Failed to delete billing");
     }
 
@@ -104,14 +123,17 @@ public class BillingController extends HttpServlet {
         response.getWriter().write(gson.toJson(data));
     }
 
-    private void sendOperationResult(HttpServletResponse response, boolean success,
-                                     String successMsg, String errorMsg) throws IOException {
+    private void getTodayTotal(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        double total = billingDAO.getTotalAmountForToday();
+        sendJsonResponse(response, total);
+    }
+
+    private void sendOperationResult(HttpServletResponse response, boolean success, String successMsg, String errorMsg) throws IOException {
         response.setContentType("application/json");
-        if (success) {
-            response.getWriter().write("{\"status\":\"success\", \"message\":\"" + successMsg + "\"}");
-        } else {
-            response.getWriter().write("{\"status\":\"error\", \"message\":\"" + errorMsg + "\"}");
-        }
+        response.setCharacterEncoding("UTF-8");
+        String jsonResponse = "{\"success\": " + success + ", \"message\": \"" + (success ? successMsg : errorMsg) + "\"}";
+        response.getWriter().write(jsonResponse);
     }
 
     private void handleError(HttpServletResponse response, Exception ex) throws IOException {

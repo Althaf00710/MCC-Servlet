@@ -18,87 +18,85 @@
     <!-- Navigation Links -->
     <nav class="flex-1 overflow-y-auto p-4 scrollbar-thin">
         <ul class="space-y-2">
+            <span class="uppercase text-xs font-thin text-gray-200">Home</span>
             <li>
                 <a href="${pageContext.request.contextPath}/views/sites/admin/dashboard.jsp"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'dashboard' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-dashboard mr-3"></i>
+                    <i class="fi fi-rr-house-blank mr-3"></i>
                     Dashboard
                 </a>
             </li>
+            <span class="uppercase text-xs font-thin text-gray-200">Booking</span>
             <li>
                 <a href="${pageContext.request.contextPath}/booking/add-booking"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'bookings' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-calendar mr-3"></i>
+                    <i class="fi fi-rr-calendar-clock mr-3"></i>
                     Add Bookings
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/booking/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    <i class="fi fi-rr-calendar-check mr-3"></i>
                     View Bookings
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/billing/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    <i class="fi fi-rr-file-invoice-dollar mr-3"></i>
                     View Bills
                 </a>
             </li>
+            <span class="uppercase text-xs font-thin text-gray-200">Actors</span>
             <li>
                 <a href="${pageContext.request.contextPath}/users/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'users' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-users mr-3"></i>
+                    <i class="fi fi-rr-user mr-3"></i>
                     Users
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/drivers/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    <i class="fi fi-rr-driver-man mr-3"></i>
                     Drivers
                 </a>
             </li>
             <li>
+                <a href="${pageContext.request.contextPath}/customers/list"
+                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
+                    <i class="fi fi-rr-review mr-3"></i>
+                    Customers
+                </a>
+            </li>
+            <span class="uppercase text-xs font-thin text-gray-200">Cabs</span>
+            <li>
                 <a href="${pageContext.request.contextPath}/cabs/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    <i class="fi fi-rr-car-alt mr-3"></i>
                     Cabs
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/cabtypes/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    <i class="fi fi-rr-cars mr-3"></i>
                     Cab Types
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/cabbrand/list"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-steering-wheel mr-3"></i>
+                    <i class="fi fi-rr-car-side mr-3"></i>
                     Cab Brands
                 </a>
             </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/customers/list"
-                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'drivers' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-steering-wheel mr-3"></i>
-                    Customers
-                </a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/reports"
-                   class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'reports' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-document mr-3"></i>
-                    Reports
-                </a>
-            </li>
+            <span class="uppercase text-xs font-thin text-gray-200">Company Data</span>
             <li>
                 <a href="${pageContext.request.contextPath}/companydata/settings"
                    class="flex items-center p-2 rounded-3xl hover:bg-gray-700 pl-3 ${param.activePage eq 'reports' ? 'bg-gray-700' : ''}">
-                    <i class="fi fi-rr-document mr-3"></i>
+                    <i class="fi fi-rr-settings mr-3"></i>
                     Data Settings
                 </a>
             </li>
