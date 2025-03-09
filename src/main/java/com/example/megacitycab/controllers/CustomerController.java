@@ -3,6 +3,7 @@ package com.example.megacitycab.controllers;
 import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.interfaces.CustomerDAO;
 import com.example.megacitycab.models.Customer;
+import com.example.megacitycab.utils.Email;
 import com.example.megacitycab.utils.ImageUploadHandler;
 import com.example.megacitycab.utils.Validations;
 import com.google.gson.Gson;
@@ -67,9 +68,66 @@ public class CustomerController extends HttpServlet {
 //            case "/updateImage":
 //                updateImage(request, response, session);
 //                break;
+            case "/send-otp":
+                sendOTP(request, response, session);
+                break;
+            case "/verify-otp":
+                verifyOTP(request, response, session);
+                break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+    private void sendOTP(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+        String email = request.getParameter("email");
+        if (email == null || email.trim().isEmpty()) {
+            sendJsonResponse(response, Map.of("status", "error", "message", "Email required"));
+            return;
+        }
+
+        int otp = (int) (Math.random() * 9000) + 1000;
+        session.setAttribute("otp", String.valueOf(otp));
+        session.setAttribute("otpEmail", email);
+        session.setAttribute("otpTime", System.currentTimeMillis());
+
+        Email.sendEmail(email, "Login OTP", "Your OTP is: " + otp);
+        sendJsonResponse(response, Map.of("status", "success", "message", "OTP sent"));
+    }
+
+    private void verifyOTP(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+        String email = request.getParameter("email");
+        String userOTP = request.getParameter("otp");
+        String storedOTP = (String) session.getAttribute("otp");
+        String storedEmail = (String) session.getAttribute("otpEmail");
+        Long otpTime = (Long) session.getAttribute("otpTime");
+
+        Map<String, Object> responseMap = new HashMap<>();
+        if (otpTime == null || System.currentTimeMillis() - otpTime > 300000) { // 5 minutes
+            responseMap.put("status", "error");
+            responseMap.put("message", "OTP expired");
+        } else if (!email.equals(storedEmail) || !userOTP.equals(storedOTP)) {
+            responseMap.put("status", "error");
+            responseMap.put("message", "Invalid OTP");
+        } else {
+            Customer customer = customerDao.getCustomerByEmail(email);
+            if (customer != null) {
+                session.setAttribute("customer", customer);
+                responseMap.put("status", "success");
+                responseMap.put("customer", customer);
+            } else {
+                responseMap.put("status", "Customer Not Exist");
+            }
+            session.removeAttribute("otp");
+            session.removeAttribute("otpEmail");
+            session.removeAttribute("otpTime");
+        }
+        sendJsonResponse(response, responseMap);
+    }
+
+    private void sendJsonResponse(HttpServletResponse response, Map<String, Object> data) throws IOException {
+        response.setContentType("application/json");
+        new Gson().toJson(data, response.getWriter());
     }
 
     private void listCustomers(HttpServletRequest request, HttpServletResponse response)

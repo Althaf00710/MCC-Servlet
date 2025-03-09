@@ -41,6 +41,7 @@ public class CustomerDAOImpl extends BaseDAOImpl<Customer> implements CustomerDA
     private static final String UPDATE_CUSTOMER_SQL = "UPDATE "+ TABLE_NAME +" SET name = ?, address = ?, countryCode = ?,phoneNumber = ?, email = ?, nicNumber = ? WHERE id = ?";
     private static final String SEARCH_CUSTOMER_SQL = "SELECT * FROM "+ TABLE_NAME +" WHERE name LIKE ? OR registerNumber LIKE ? OR (countryCode = ? AND phoneNumber LIKE ?) OR email LIKE ?";
     private static final String CHECK_CUSTOMER_SQL = "SELECT email, nicNumber, phoneNumber FROM customer WHERE email = ? OR nicNumber = ? OR (countryCode = ? AND phoneNumber LIKE ?)";
+    private static final String GET_CUSTOMER_BY_EMAIL_SQL = "SELECT * FROM customer WHERE email = ?";
 
     @Override
     public boolean add(Customer customer) {
@@ -160,6 +161,20 @@ public class CustomerDAOImpl extends BaseDAOImpl<Customer> implements CustomerDA
             LOGGER.log(Level.SEVERE, "Error checking customer existence", e);
         }
         return existsMap;
+    }
+
+    @Override
+    public Customer getCustomerByEmail(String email) {
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(GET_CUSTOMER_BY_EMAIL_SQL)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() ? mapResultSetToEntity(rs) : null;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching customer by email", e);
+            return null;
+        }
     }
 
 }
