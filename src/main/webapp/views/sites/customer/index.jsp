@@ -19,7 +19,7 @@
     <script defer src="${pageContext.request.contextPath}/views/static/js/customer/addStop.js"></script>
     <script defer src="${pageContext.request.contextPath}/views/static/js/customer/formModal.js"></script>
     <script defer src="${pageContext.request.contextPath}/views/static/js/customer/Addbooking.js"></script>
-    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5YRRT1sTO8-gtozti4KNkLxDU66NwzhM&libraries=places&callback=initMap"></script>
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initMap"></script>
 </head>
 <body class="bg-gray-900 text-white font-inter">
 <!-- Header with Glassmorphism -->
