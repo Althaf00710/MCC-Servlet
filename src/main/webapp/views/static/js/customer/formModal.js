@@ -195,9 +195,8 @@ function resetForms() {
 }
 
 function handleSuccessfulLogin(customer) {
-    // Store customer data or redirect
-    console.log('Logged in customer:', customer);
-    window.location.href = '/dashboard'; // Example redirect
+    localStorage.setItem('customer', JSON.stringify(customer));
+    updateLoginButton();
 }
 
 function switchToRegistration(email) {
@@ -205,3 +204,56 @@ function switchToRegistration(email) {
     registerForm.classList.remove('hidden');
     registerForm.querySelector('input[type="email"]').value = email;
 }
+
+document.addEventListener('DOMContentLoaded', updateLoginButton);
+
+function updateLoginButton() {
+    const customer = JSON.parse(localStorage.getItem('customer'));
+    const loginBtn = document.getElementById('loginBtn');
+
+    if (customer) {
+        loginBtn.textContent = 'Account';
+        loginBtn.removeEventListener('click', openLoginModal);
+        loginBtn.addEventListener('click', () => window.location.href = '/account');
+    } else {
+        loginBtn.textContent = 'Login';
+        loginBtn.removeEventListener('click', () => window.location.href = '/account');
+        loginBtn.addEventListener('click', openLoginModal);
+    }
+}
+
+function openLoginModal() {
+    resetForms();
+    loginModal.classList.remove('hidden');
+}
+
+const texts = [
+    'Your Partner in Travel',
+    'Your Adventure Begins Here',
+    'Explore with Us',
+    'Start Your Journey Today',
+    'Travel Made Easy',
+    'Where Every Journey Counts'
+];
+
+let currentIndex = 0;
+
+function changeText() {
+    const spanElement = document.getElementById('journeyText');
+    spanElement.classList.add('fade-out'); // Add the fade-out animation
+    setTimeout(() => {
+        spanElement.textContent = texts[currentIndex]; // Change the text
+        spanElement.classList.remove('fade-out'); // Remove the fade-out class
+        spanElement.classList.add('fade-in'); // Add the fade-in animation
+
+        // Move to the next text, loop if it’s the end
+        currentIndex = (currentIndex + 1) % texts.length;
+    }, 500); // Wait for the fade-out animation to complete
+}
+
+// Initial text change
+setInterval(changeText, 5000);
+
+// Change the text immediately after page load
+changeText();
+

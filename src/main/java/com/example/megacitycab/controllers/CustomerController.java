@@ -46,6 +46,15 @@ public class CustomerController extends HttpServlet {
             case "/edit":
                 editCustomer(request, response);
                 break;
+            case "/booking":
+                customerSite(request, response);
+                break;
+            case "/logout":
+                logout(request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                break;
         }
     }
 
@@ -86,13 +95,23 @@ public class CustomerController extends HttpServlet {
             return;
         }
 
+        if (!customerDao.checkCustomerExistsByEmail(email)) {
+            sendJsonResponse(response, Map.of("status", "error", "message", "Customer not found"));
+            return;
+        }
+
         int otp = (int) (Math.random() * 9000) + 1000;
         session.setAttribute("otp", String.valueOf(otp));
         session.setAttribute("otpEmail", email);
         session.setAttribute("otpTime", System.currentTimeMillis());
 
-        Email.sendEmail(email, "Login OTP", "Your OTP is: " + otp);
-        sendJsonResponse(response, Map.of("status", "success", "message", "OTP sent"));
+        try {
+            Email.sendEmail(email, "Login OTP", "Your OTP is: " + otp);
+            sendJsonResponse(response, Map.of("status", "success", "message", "OTP sent"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendJsonResponse(response, Map.of("status", "error", "message", "Failed to send OTP. Please try again."));
+        }
     }
 
     private void verifyOTP(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
@@ -135,6 +154,20 @@ public class CustomerController extends HttpServlet {
         List<Customer> customers = customerDao.getAll();
         request.setAttribute("customers", customers);
         request.getRequestDispatcher("/views/sites/admin/customer/customers.jsp").forward(request, response);
+    }
+
+    private void logout (HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        response.sendRedirect(request.getContextPath() + "/customers/booking");
+    }
+
+    private void customerSite(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/views/sites/customer/index.jsp").forward(request, response);
     }
 
     private void getCustomers(HttpServletRequest request, HttpServletResponse response)

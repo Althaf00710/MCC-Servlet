@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.example.megacitycab.models.Customer" %><%--
   Created by IntelliJ IDEA.
   User: Altha
   Date: 3/9/2025
@@ -19,22 +19,41 @@
     <script defer src="${pageContext.request.contextPath}/views/static/js/customer/addStop.js"></script>
     <script defer src="${pageContext.request.contextPath}/views/static/js/customer/formModal.js"></script>
     <script defer src="${pageContext.request.contextPath}/views/static/js/customer/Addbooking.js"></script>
-    <script defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initMap"></script>
 </head>
 <body class="bg-gray-900 text-white font-inter">
 <!-- Header with Glassmorphism -->
 <header class="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-2 bg-white/20 backdrop-blur-sm border border-white/10 shadow-lg z-50">
     <a href="#"><img src="${pageContext.request.contextPath}/views/static/images/logoDark.png" alt="Mega City" class="h-10 cursor-pointer"></a>
-    <button id="loginBtn" class="px-8 py-1.5 bg-orange-500/90 backdrop-blur-lg border border-orange-500/50 text-white font-semibold rounded-full hover:bg-orange-500 hover:text-white transition-all duration-300 hover:cursor-pointer">Login</button>
+
+    <div class="relative">
+        <%
+            Customer loggedInCustomer = (Customer) session.getAttribute("customer");
+            if (loggedInCustomer != null) {
+        %>
+        <!-- Account Button -->
+        <button class="px-8 py-1.5 bg-orange-500/90 backdrop-blur-lg border border-orange-500/50 text-white font-semibold rounded-full hover:bg-orange-500 hover:text-white transition-all duration-300 hover:cursor-pointer relative">
+            Account
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+            <a href="account.jsp" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">View Account</a>
+            <a href="logout" class="block px-4 py-2 text-red-600 hover:bg-red-100">Logout</a>
+        </div>
+        <% } else { %>
+        <!-- Login Button -->
+        <button id="loginBtn" class="px-8 py-1.5 bg-orange-500/90 backdrop-blur-lg border border-orange-500/50 text-white font-semibold rounded-full hover:bg-orange-500 hover:text-white transition-all duration-300 hover:cursor-pointer">Login</button>
+        <% } %>
+    </div>
 </header>
 
 <!-- Map Section -->
 <div class="h-screen relative">
     <div id="map" class="absolute w-full h-full"></div>
     <div class="absolute top-0 left-0 w-full h-full pointer-events-none" style="background: linear-gradient(to bottom, rgba(255, 165, 0, 0.2), transparent);">
-        <div class="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/4 flex flex-col justify-center w-full items-center animate-slide-down">
-            <span class="text-center text-4xl font-medium text-orange-500/50">Your Journey starts here with</span>
-            <img src="${pageContext.request.contextPath}/views/static/images/logoDark.png" alt="MegaCity Logo" class="h-35 center w-100">
+        <div class="absolute top-4/8 left-1/2 transform -translate-x-1/2 -translate-y-1/4 flex flex-col justify-center w-full items-center animate-slide-down">
+            <span id="journeyText" class="text-center text-4xl font-medium text-orange-500/70">Your Journey starts here with</span>
+            <img src="${pageContext.request.contextPath}/views/static/images/logoDark.png" alt="MegaCity Logo" class="h-15 center w-auto">
         </div>
     </div>
 
@@ -59,7 +78,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
                 </div>
-                <input id="date" type="date" class="w-1/3 px-4 py-2 bg-white/90 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900 transition-all duration-300">
+                <input id="date" type="datetime-local" class="w-1/3 px-4 py-2 bg-white/90 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900 transition-all duration-300">
             </div>
 
             <div id="stopsContainer" class="space-y-2"></div>
@@ -67,6 +86,14 @@
 
             <div id="cabTypeContainer" class="flex flex-nowrap gap-4 overflow-x-auto scroll-smooth whitespace-nowrap px-4 max-h-0 overflow-hidden transition-all duration-600 ease-in-out group-hover:max-h-60 group-hover:py-2"></div>
             <input type="hidden" id="selectedCabType" name="cabTypeId" required>
+
+            <!-- Fare Summary and Confirm Button -->
+            <div id="summaryContainer" class="text-gray-900 flex justify-evenly bg-gray-200 p-2 rounded-lg items-center">
+                <p id="distanceText" class="text-gray-700">Total Distance: 0 km</p>
+                <p id="waitTimeText" class="text-gray-700">Total Wait Time: 0 mins</p>
+                <p id="fareText" class="text-gray-700">Estimated Fare: Rs. 0.00</p>
+                <button type="button" id="confirmBooking" class="hover:cursor-pointer py-1 px-4 bg-orange-500 text-white rounded-full font-semibold hover:bg-orange-600 transition-all duration-300">Confirm</button>
+            </div>
         </form>
     </div>
 </div>
@@ -110,7 +137,7 @@
 </div>
 
 <!-- 3D Car Canvas -->
-<div id="canvas-container" class="fixed top-3/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px]"></div>
+<div id="canvas-container" class="fixed top-12/16 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px]"></div>
 
 <!-- Login Modal -->
 <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-md hidden z-50">
@@ -162,5 +189,102 @@
         </div>
     </div>
 </div>
+
+<script>
+    // JSP-based session check
+    document.getElementById('confirmBooking').addEventListener('click', async () => {
+        <% if (loggedInCustomer == null) { %>
+        alert('Please login to confirm your booking');
+        window.location.href = '${pageContext.request.contextPath}/customers/login';
+        return;
+        <% } %>
+
+        try {
+            const pickupPlace = pickupAutocomplete.getPlace();
+            const dropPlace = dropAutocomplete.getPlace();
+
+            if (!pickupPlace?.geometry || !dropPlace?.geometry) {
+                alert('Please select valid pickup and drop locations');
+                return;
+            }
+
+            // Get latest directions data
+            const directionsResult = window.appData.lastDirectionsResult;
+            if (!directionsResult?.routes?.[0]?.legs) {
+                alert('Please calculate the route first');
+                return;
+            }
+
+            if (!document.getElementById('date').value) {
+                alert('Please select a booking date and time');
+                return;
+            }
+
+            const legs = directionsResult.routes[0].legs;
+
+            // Process intermediate stops using existing place data
+            const intermediateStops = window.appData.stops.map((stop, index) => {
+                const place = stop.place;
+                if (!place?.geometry) {
+                    throw new Error(`Invalid stop at position ${index + 1}`);
+                }
+
+                return {
+                    stopLocation: place.formatted_address,
+                    longitude: place.geometry.location.lng(),
+                    latitude: place.geometry.location.lat(),
+                    placeId: place.place_id,
+                    waitMinutes: parseInt(stop.waitTimeInput.value) || 0,
+                    distanceFromLastStop: (legs[index].distance.value / 1000).toFixed(2)
+                };
+            });
+
+            // Add final drop location
+            const dropStop = {
+                stopLocation: dropPlace.formatted_address,
+                longitude: dropPlace.geometry.location.lng(),
+                latitude: dropPlace.geometry.location.lat(),
+                placeId: dropPlace.place_id,
+                waitMinutes: 0,
+                distanceFromLastStop: (legs[legs.length - 1].distance.value / 1000).toFixed(2)
+            };
+
+            const allStops = [...intermediateStops, dropStop];
+
+            // Construct request body
+            const requestBody = {
+                cabId: parseInt(document.getElementById('selectedCabType').value),
+                customerId: <%= loggedInCustomer.getId() %>,
+                userId: 1,
+                bookingDateTime: new Date(document.getElementById('date').value).toISOString(),
+                status: "PENDING",
+                latitude: pickupPlace.geometry.location.lat(),
+                longitude: pickupPlace.geometry.location.lng(),
+                pickupLocation: pickupPlace.formatted_address,
+                placeId: pickupPlace.place_id,
+                stops: allStops
+            };
+
+            // Submit booking
+            const response = await fetch('${pageContext.request.contextPath}/booking/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '${_csrf.token}'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) throw new Error('Booking failed: ' + await response.text());
+
+            alert('Booking confirmed successfully!');
+            window.location.href = '${pageContext.request.contextPath}/customers/booking';
+        } catch (error) {
+            console.error('Booking error:', error);
+            alert(error.message || 'Failed to confirm booking');
+        }
+    });
+</script>
+
 </body>
 </html>

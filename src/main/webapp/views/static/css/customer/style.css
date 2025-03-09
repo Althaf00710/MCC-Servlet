@@ -65,3 +65,26 @@ input:invalid:focus {
 .animate-slide-down {
     animation: slideDown 2s ease-out;
 }
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s forwards;
+}
+
+.relative:hover .absolute {
+    opacity: 1;
+    visibility: visible;
+}

@@ -177,4 +177,21 @@ public class CustomerDAOImpl extends BaseDAOImpl<Customer> implements CustomerDA
         }
     }
 
+    @Override
+    public boolean checkCustomerExistsByEmail(String email) {
+        boolean exists = false;
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM customer WHERE email = ?")) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    exists = rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exists;
+    }
+
 }

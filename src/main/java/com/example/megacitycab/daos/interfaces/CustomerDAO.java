@@ -8,4 +8,5 @@ import java.util.Map;
 public interface CustomerDAO extends GenericDAO<Customer> {
     Map<String, Boolean> checkCustomerExists(String email, String nicNumber, String countryCode, String phoneNumber);
     Customer getCustomerByEmail(String email);
+    boolean checkCustomerExistsByEmail(String email);
 }

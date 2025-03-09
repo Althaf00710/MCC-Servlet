@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const canvasContainer = document.getElementById("canvas-container");
 
     const renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setSize(500, 500);
+    renderer.setSize(400, 400);
     canvasContainer.appendChild(renderer.domElement);
 
     // Lights
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         car = gltf.scene;
         car.scale.set(250, 250, 250);
         car.position.set(0, -1, 0);
-        car.rotation.set(Math.PI / 1, 0, 3.15); // Start with top view
+        car.rotation.set(Math.PI / 1, 1.5, 3.15); // Start with top view
 
         scene.add(car);
     }, undefined, function (error) {

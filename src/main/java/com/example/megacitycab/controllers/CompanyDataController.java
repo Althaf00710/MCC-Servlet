@@ -20,15 +20,33 @@ public class CompanyDataController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CompanyData companyData = companyDataDAO.getCompanyData();
+        String pathInfo = request.getPathInfo(); // Get path after "/companydata"
 
-        if (companyData != null) {
-            request.setAttribute("companyData", companyData);
-            request.getRequestDispatcher("/views/sites/admin/companydata.jsp").forward(request, response);
+        if ("/get".equals(pathInfo)) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            CompanyData companyData = companyDataDAO.getCompanyData();
+            if (companyData != null) {
+                String jsonResponse = gson.toJson(companyData);
+                response.getWriter().write(jsonResponse);
+            } else {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("{\"error\": \"Company Data Not Found\"}");
+            }
         } else {
-            response.sendRedirect("error.jsp?message=Company Data Not Found");
+            // Default behavior: forward to JSP
+            CompanyData companyData = companyDataDAO.getCompanyData();
+            if (companyData != null) {
+                request.setAttribute("companyData", companyData);
+                request.getRequestDispatcher("/views/sites/admin/companydata.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("error.jsp?message=Company Data Not Found");
+            }
         }
     }
+
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
