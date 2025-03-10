@@ -67,7 +67,7 @@ public class BookingController extends HttpServlet {
                     getDailySales(request, response);
                     break;
                 default:
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    show404error(request, response);
             }
         } catch (Exception ex) {
             handleError(response, ex);
@@ -93,11 +93,16 @@ public class BookingController extends HttpServlet {
                     deleteBooking(request, response);
                     break;
                 default:
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    show404error(request, response);
             }
         } catch (Exception ex) {
             handleError(response, ex);
         }
+    }
+
+    private void show404error(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/views/errors/404.jsp").forward(request, response);
     }
 
     private void listBookings(HttpServletRequest request, HttpServletResponse response)

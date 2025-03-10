@@ -9,13 +9,24 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebFilter("/users/*")
-public class AuthenticationFiler implements Filter {
+public class AuthenticationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession(false);
+
+        String path = req.getRequestURI();
+
+        // Allow OTP-related endpoints without authentication
+        if (path.endsWith("/sendOtp") || path.endsWith("/verifyOtp") || path.endsWith("/resetPassword")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // Otherwise, enforce authentication
         if (session == null || session.getAttribute("user") == null) {
-            ((HttpServletResponse) response).sendRedirect(req.getContextPath() + "/login");
+            res.sendRedirect(req.getContextPath() + "/login");
         } else {
             chain.doFilter(request, response);
         }

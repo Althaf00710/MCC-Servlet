@@ -17,7 +17,6 @@
         <script DEFER src="${pageContext.request.contextPath}/views/static/js/dashboard.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=&libraries=places"></script>
     </head>
     <body class="bg-gray-50">
         <%@ include file="common/navBar.jsp" %>

@@ -1,5 +1,16 @@
 var topCabChart, dailySalesChart;
 
+fetch(`${window.location.origin}/megacitycab_war_exploded/getKey`)
+    .then(response => response.json())
+    .then(data => {
+        const apiKey = data.apiKey;
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap`;
+        script.defer = true;
+        document.head.appendChild(script);
+    })
+    .catch(error => console.error('Error fetching API Key:', error));
+
 // Initialize charts when document is ready
 $(document).ready(function() {
     // Doughnut Chart (Top Cab Types)

@@ -51,6 +51,11 @@ public class CabAssignController extends HttpServlet {
         }
     }
 
+    private void show404error(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/views/errors/404.jsp").forward(request, response);
+    }
+
     private void listCabAssignments(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<CabAssign> cabAssigns = cabAssignDAO.getActiveCabAssigns();

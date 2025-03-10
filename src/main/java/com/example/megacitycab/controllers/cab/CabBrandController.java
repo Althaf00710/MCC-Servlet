@@ -57,8 +57,13 @@ public class CabBrandController extends HttpServlet {
                 deleteCabBrand(request, response, session);
                 break;
             default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                show404error(request, response);
         }
+    }
+
+    private void show404error(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/views/errors/404.jsp").forward(request, response);
     }
 
     private void deleteCabBrand(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {

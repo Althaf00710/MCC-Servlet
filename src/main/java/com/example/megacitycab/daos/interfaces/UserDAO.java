@@ -14,4 +14,6 @@ public interface UserDAO {
     void updateLastActive(int userId, String lastActive);
     boolean updateAvatarUrl(User user);
     boolean isUsernameTaken(String username);
+    User getUserByEmailOrUsername(String input);
+    boolean updatePassword(String email, String hashedPassword);
 }

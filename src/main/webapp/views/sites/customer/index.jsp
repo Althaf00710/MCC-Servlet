@@ -254,7 +254,11 @@
             // Construct request body
             const requestBody = {
                 cabId: parseInt(document.getElementById('selectedCabType').value),
-                customerId: <%= loggedInCustomer.getId() %>,
+                    <% if (loggedInCustomer != null) { %>
+                    customerId: <%= loggedInCustomer.getId() %>,
+                    <% } else { %>
+                    customerId: null, 
+                <% } %>
                 userId: 1,
                 bookingDateTime: new Date(document.getElementById('date').value).toISOString(),
                 status: "PENDING",

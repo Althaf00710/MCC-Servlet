@@ -229,4 +229,56 @@ public class UserDAOImpl implements UserDAO {
         }
         return false;
     }
+
+    public boolean checkUserExistsByIdentifier(String identifier) {
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT COUNT(*) FROM users WHERE username = ? OR email = ?")) {
+            stmt.setString(1, identifier);
+            stmt.setString(2, identifier);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public User getUserByEmailOrUsername(String input) {
+        String sql = "SELECT * FROM User WHERE email = ? OR username = ?";
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, input);
+            stmt.setString(2, input);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User.Builder()
+                        .id(rs.getInt("id"))
+                        .username(rs.getString("username"))
+                        .email(rs.getString("email"))
+                        .password(rs.getString("password"))
+                        .build();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updatePassword(String email, String hashedPassword) {
+        String sql = "UPDATE User SET password=? WHERE email=?";
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, hashedPassword);
+            stmt.setString(2, email);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+
 }

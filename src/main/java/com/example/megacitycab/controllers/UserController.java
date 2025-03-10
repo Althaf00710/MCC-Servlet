@@ -4,9 +4,12 @@ import com.example.megacitycab.daos.DAOFactory;
 import com.example.megacitycab.daos.impl.UserDAOImpl;
 import com.example.megacitycab.daos.interfaces.UserDAO;
 import com.example.megacitycab.models.user.User;
+import com.example.megacitycab.services.OTPService;
 import com.example.megacitycab.utils.ImageUploadHandler;
+import com.example.megacitycab.utils.PasswordHasher;
 import com.example.megacitycab.utils.Validations;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.annotation.MultipartConfig;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +32,13 @@ import java.util.Map;
 @WebServlet("/users/*")
 public class UserController extends HttpServlet {
     private final UserDAO userDao = DAOFactory.getUserDAO();
+    private final OTPService otpService = new OTPService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getPathInfo();
+        HttpSession session = request.getSession();
         if (action == null) action = "/list";
         switch (action) {
             case "/list":
@@ -79,9 +85,23 @@ public class UserController extends HttpServlet {
             case "/updateImage":
                 updateImage(request, response, session);
                 break;
+            case "/sendOtp":
+                sendOtp(request, response);
+                break;
+            case "/verifyOtp":
+                verifyOtp(request, response);
+                break;
+            case "/resetPassword":
+                resetPassword(request, response);
+                break;
             default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                show404error(request, response);
         }
+    }
+
+    private void show404error(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/views/errors/404.jsp").forward(request, response);
     }
 
     private void addUser(HttpServletRequest request, HttpServletResponse response, HttpSession session)
@@ -215,5 +235,81 @@ public class UserController extends HttpServlet {
         }
 
         response.sendRedirect(request.getContextPath() + "/users/list");
+    }
+
+    private void sendOtp(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String input = request.getParameter("input"); // Can be email or username
+        User user = userDao.getUserByEmailOrUsername(input);
+
+        if (user == null) {
+            response.getWriter().write("{\"error\": \"User not found!\"}");
+            return;
+        }
+
+        String otp = otpService.generateAndStoreOTP(user.getEmail());
+        boolean sent = otpService.sendOtpEmail(user.getEmail(), otp);
+
+        if (sent) {
+            response.getWriter().write("{\"success\": \"OTP sent successfully!\"}");
+        } else {
+            response.getWriter().write("{\"error\": \"Failed to send OTP!\"}");
+        }
+    }
+
+    private void verifyOtp(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String input = request.getParameter("input");
+        String otp = request.getParameter("otp");
+
+        User user = userDao.getUserByEmailOrUsername(input);
+        if (user == null) {
+            response.getWriter().write("{\"error\": \"User not found!\"}");
+            return;
+        }
+
+        boolean isValid = otpService.verifyOTP(user.getEmail(), otp);
+        if (isValid) {
+            response.getWriter().write("{\"success\": \"OTP verified!\"}");
+        } else {
+            response.getWriter().write("{\"error\": \"Invalid OTP!\"}");
+        }
+    }
+
+    private void resetPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        Gson gson = new Gson();
+
+        try {
+            // Read JSON payload
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = request.getReader().readLine()) != null) {
+                sb.append(line);
+            }
+            JsonObject json = gson.fromJson(sb.toString(), JsonObject.class);
+
+            String identifier = json.get("input").getAsString();
+            String newPassword = json.get("newPassword").getAsString();
+
+            User user = userDao.getUserByEmailOrUsername(identifier);
+            if (user == null) {
+                out.write(gson.toJson(Map.of("success", false, "error", "User not found")));
+                return;
+            }
+
+            // Update password using user ID
+            boolean success = userDao.updatePassword(user.getEmail(), PasswordHasher.hash(newPassword));
+
+            if (success) {
+                out.write(gson.toJson(Map.of("success", true, "message", "Password reset successful")));
+            } else {
+                out.write(gson.toJson(Map.of("success", false, "error", "Password update failed")));
+            }
+        } catch (Exception e) {
+            out.write(gson.toJson(Map.of("success", false, "error", "Invalid request format")));
+            e.printStackTrace();
+        } finally {
+            out.close();
+        }
     }
 }

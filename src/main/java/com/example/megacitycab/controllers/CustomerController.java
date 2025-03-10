@@ -53,7 +53,7 @@ public class CustomerController extends HttpServlet {
                 logout(request, response);
                 break;
             default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                show404error(request, response);
                 break;
         }
     }
@@ -84,7 +84,7 @@ public class CustomerController extends HttpServlet {
                 verifyOTP(request, response, session);
                 break;
             default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                show404error(request, response);
         }
     }
 
@@ -142,6 +142,11 @@ public class CustomerController extends HttpServlet {
             session.removeAttribute("otpTime");
         }
         sendJsonResponse(response, responseMap);
+    }
+
+    private void show404error(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/views/errors/404.jsp").forward(request, response);
     }
 
     private void sendJsonResponse(HttpServletResponse response, Map<String, Object> data) throws IOException {

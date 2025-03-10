@@ -106,7 +106,7 @@
     <!-- Add Cab Type Modal -->
     <div id="Modal" class="hidden fixed inset-0 flex items-center justify-center bg-opacity-50 h-full w-full
                                bg-gray-200/32 border border-gray-50/48 rounded-2xl
-                               shadow-lg backdrop-blur-[9px]">
+                               shadow-lg backdrop-blur-[9px] z-50">
         <div class="modal-animation relative p-5 border w-1/3 shadow-lg rounded-2xl bg-white">
             <!-- Modal Header -->
             <div class="flex justify-between items-center mb-4">

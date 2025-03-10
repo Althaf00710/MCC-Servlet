@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="views/static/css/loginPage.s.css">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
     <link rel="stylesheet" href="views/static/css/mouseAnimation.css">
+    <link rel="stylesheet" href="views/static/css/loginStyles.css">
 </head>
 <body>
 <div id="vanta-bg" class="flex h-screen">
@@ -29,56 +30,58 @@
                 alt="MCC Logo"
                 class="mb-4 w-3/4 mx-auto">
         <!-- Login Form -->
-            <form method="post" class="rounded-2xl" action="${pageContext.request.contextPath}/login">
-                <p class="text-2xl font-semibold text-gray-700"><span class="text-orange-500">Welcome</span> Back,</p>
-                <span class="text-sm text-gray-700 mb-4 font-light">Enter Your Valid Credentials to Login.</span>
-                <!-- Username Input -->
-                <div class="my-4 relative">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
-                        <i class="fi fi-rr-user text-lg"></i>
+            <div id="form-content">
+                <form method="post" class="rounded-2xl" action="${pageContext.request.contextPath}/login" id="login-form">
+                    <p class="text-2xl font-semibold text-gray-700"><span class="text-orange-500">Welcome</span> Back,</p>
+                    <span class="text-sm text-gray-700 mb-4 font-light">Enter Your Valid Credentials to Login.</span>
+                    <!-- Username Input -->
+                    <div class="my-4 relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                            <i class="fi fi-rr-user text-lg"></i>
+                        </div>
+                        <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                                placeholder="Username"
+                                required>
                     </div>
-                    <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
-                            placeholder="Username"
-                            required>
-                </div>
 
-                <!-- Password Input -->
-                <div class="mb-4 relative">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
-                        <i class="fi fi-rr-lock text-lg"></i>
+                    <!-- Password Input -->
+                    <div class="mb-4 relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                            <i class="fi fi-rr-lock text-lg"></i>
+                        </div>
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                                placeholder="Password"
+                                required>
                     </div>
-                    <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
-                            placeholder="Password"
-                            required>
-                </div>
 
-                <!-- Submit Button -->
-                <div class="mb-4">
-                    <button
-                            type="submit"
-                            class="w-full bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition">
-                        Login
-                    </button>
-                </div>
+                    <!-- Submit Button -->
+                    <div class="mb-4">
+                        <button
+                                type="submit"
+                                class="w-full bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition">
+                            Login
+                        </button>
+                    </div>
 
-                <!-- Horizontal Line -->
-                <div class="flex items-center justify-center my-4">
-                    <div class="w-1/3 border-t border-gray-300"></div>
-                </div>
+                    <!-- Horizontal Line -->
+                    <div class="flex items-center justify-center my-4">
+                        <div class="w-1/3 border-t border-gray-300"></div>
+                    </div>
 
-                <!-- Forgot Password Link -->
-                <p class="text-center text-gray-500 text-sm">
-                    Forgot Password? <a href="#" class="text-orange-500 font-bold hover:underline">We Got You.</a>
-                </p>
-            </form>
+                    <!-- Forgot Password Link -->
+                    <p class="text-center text-gray-500 text-sm hover:cursor-pointer" onclick="showUsernameForm(event)">
+                        Forgot Password? <span class="text-orange-500 font-bold hover:underline">We Got You.</span>
+                    </p>
+                </form>
+            </div>
         </div>
     </div>
 </div>

@@ -58,6 +58,11 @@ public class CompanyDataController extends HttpServlet {
         }
     }
 
+    private void show404error(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/views/errors/404.jsp").forward(request, response);
+    }
+
     private void updateCompanyData(HttpServletRequest request, HttpServletResponse response) throws IOException {
         BufferedReader reader = request.getReader();
         CompanyData updatedCompanyData = gson.fromJson(reader, CompanyData.class);
