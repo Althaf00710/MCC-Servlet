@@ -1,0 +1,25 @@
+.mouse-circle {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #3e3e3e;
+    border-radius: 50%;
+    pointer-events: none;
+    transition:
+            width 0.5s ease-out,
+            height 0.5s ease-out,
+            opacity 0.5s ease-out;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: darken;
+    z-index: 9999;
+}
+
+.mouse-trail {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: #ff5000;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+}

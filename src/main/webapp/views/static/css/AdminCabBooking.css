@@ -1,0 +1,27 @@
+#cabTypeContainer::-webkit-scrollbar {
+    height: 5px;
+}
+
+#cabTypeContainer::-webkit-scrollbar-track {
+    background: #f8f8f8;
+    border-radius: 50px;
+}
+
+#cabTypeContainer::-webkit-scrollbar-thumb {
+    background: #b5b5b5;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+#cabTypeContainer::-webkit-scrollbar-thumb:hover {
+    background: #acacac;
+    height: 3px;
+    margin-top: -1px;
+}
+
+#cabTypeContainer {
+    scrollbar-width: thin;
+    scrollbar-color: #a0aec0 #f8f8f8;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    padding-bottom: 4px;
+}
