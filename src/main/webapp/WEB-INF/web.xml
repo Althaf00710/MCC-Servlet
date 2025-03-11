@@ -21,4 +21,9 @@
         <url-pattern>/cabassign/list</url-pattern>
     </servlet-mapping>
 
+    <context-param>
+        <param-name>MAP_API_KEY</param-name>
+        <param-value></param-value>
+    </context-param>
+
 </web-app>
