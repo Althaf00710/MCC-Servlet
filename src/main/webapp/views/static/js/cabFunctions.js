@@ -1,9 +1,8 @@
-
-    function fetchCabBrands(selectedBrandId = null) {
+function fetchCabBrands(selectedBrandId = null) {
     fetch(`${window.location.origin}/megacitycab_war_exploded/cabbrand/get`)
         .then(response => response.json())
         .then(data => {
-            const cabBrandSelect = document.getElementById('editCabBrandId');
+            const cabBrandSelect = document.getElementById('cabBrandId');
             cabBrandSelect.innerHTML = '<option value="">Select Brand</option>';
             data.forEach(brand => {
                 const option = document.createElement('option');
@@ -22,7 +21,7 @@
     fetch(`${window.location.origin}/megacitycab_war_exploded/cabtypes/get`)
         .then(response => response.json())
         .then(data => {
-            const cabTypeSelect = document.getElementById('editCabTypeId');
+            const cabTypeSelect = document.getElementById('cabTypeId');
             cabTypeSelect.innerHTML = '<option value="">Select Type</option>';
             data.forEach(type => {
                 const option = document.createElement('option');
@@ -37,7 +36,7 @@
         .catch(error => console.error('Error fetching cab types:', error));
 }
 
-    function openEditModal(cabId) {
+function openEditModal(cabId) {
     fetch(`${window.location.origin}/megacitycab_war_exploded/cabs/edit?id=${cabId}`)
         .then(response => response.json())
         .then(cab => {
@@ -56,4 +55,10 @@
 
     function closeEditModal() {
     document.getElementById('editModal').classList.add('hidden');
+}
+
+function openCModal() {
+    document.getElementById('Modal').classList.remove('hidden');
+    fetchCabBrands();
+    fetchCabTypes();
 }

@@ -23,8 +23,6 @@ CREATE TABLE Customer (
                           joinedDate VARCHAR(50)
 );
 
-SELECT * FROM customer;
-
 CREATE TABLE Driver (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         name VARCHAR(100),
@@ -35,8 +33,6 @@ CREATE TABLE Driver (
                         avatarUrl TEXT,
                         status VARCHAR(20) NOT NULL DEFAULT 'Never'
 );
-
-SELECT * FROM driver;
 
 CREATE TABLE CabBrand (
                           id INT AUTO_INCREMENT PRIMARY KEY,

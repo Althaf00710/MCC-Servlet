@@ -50,7 +50,7 @@
         <!-- Cab Types Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-16">
             <c:forEach items="${cabTypes}" var="cabType">
-                <div class="relative bg-gray-100 border-2 border-orange-400 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-2 text-center pt-20 w-68">
+                <div class="relative bg-gray-100 border-2 border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-2 text-center pt-20 w-68 hover:border-orange-400">
                     <!-- Image (Bigger & Overlapping Top Border) -->
                     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/8 w-96 h-32 z-1">
                         <c:choose>

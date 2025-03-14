@@ -17,3 +17,6 @@ public interface UserDAO {
     User getUserByEmailOrUsername(String input);
     boolean updatePassword(String email, String hashedPassword);
 }
+
+
+

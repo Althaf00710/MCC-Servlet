@@ -1,6 +1,7 @@
 package com.example.megacitycab.controllers;
 
 import com.example.megacitycab.daos.DAOFactory;
+import com.example.megacitycab.daos.interfaces.cab.CabAssignDAO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 
@@ -211,6 +212,14 @@ public class DriverController extends HttpServlet {
     private void deleteDriver(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws IOException {
         int driverId = Integer.parseInt(request.getParameter("id"));
+        final CabAssignDAO cabAssignDAO = DAOFactory.getCabAssignDAO();
+
+        if(cabAssignDAO.isUserAssigned(driverId)) {
+            session.setAttribute("error", "Driver is assigned!");
+            response.sendRedirect(request.getContextPath() + "/drivers/list");
+            return;
+        }
+
         boolean success = driverDao.deleteDriver(driverId);
 
         if (success) {

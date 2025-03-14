@@ -41,7 +41,7 @@
             </div>
 
             <!-- Add Brand Button -->
-            <button onclick="openModal()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-3xl flex items-center transition-colors duration-200 whitespace-nowrap">
+            <button onclick="openCModal()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-3xl flex items-center transition-colors duration-200 whitespace-nowrap">
                 <i class="fi fi-rr-plus mr-2"></i>
                 Add Cabs
             </button>
@@ -96,7 +96,9 @@
     </div>
 
     <!-- Modal for Creating Cab -->
-    <div id="Modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+    <div id="Modal" class="fixed inset-0 bg-opacity-50 h-full w-full
+                               bg-gray-200/32 border border-gray-50/48 rounded-2xl
+                               shadow-lg backdrop-blur-[9px] flex justify-center items-center hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
             <h2 class="text-2xl font-semibold text-gray-800 mb-4">Create New Cab</h2>
 
@@ -139,7 +141,9 @@
     </div>
 
     <!-- Edit Cab Modal -->
-    <div id="editModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+    <div id="editModal" class="fixed inset-0 bg-opacity-50 h-full w-full
+                               bg-gray-200/32 border border-gray-50/48 rounded-2xl
+                               shadow-lg backdrop-blur-[9px] flex justify-center items-center hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
             <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Cab</h2>
 
@@ -147,15 +151,15 @@
                 <input type="hidden" id="editCabId" name="id">
 
                 <div class="mb-4">
-                    <label for="editCabBrandId" class="block text-gray-700">Cab Brand</label>
-                    <select id="editCabBrandId" name="cabBrandId" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <label for="cabBrandId" class="block text-gray-700">Cab Brand</label>
+                    <select id="cabBrandId" name="cabBrandId" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
                         <option value="">Select Brand</option>
                     </select>
                 </div>
 
                 <div class="mb-4">
-                    <label for="editCabTypeId" class="block text-gray-700">Cab Type</label>
-                    <select id="editCabTypeId" name="cabTypeId" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <label for="cabTypeId" class="block text-gray-700">Cab Type</label>
+                    <select id="cabTypeId" name="cabTypeId" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
                         <option value="">Select Type</option>
                     </select>
                 </div>
@@ -182,5 +186,7 @@
             </form>
         </div>
     </div>
+
 </body>
+
 </html>

@@ -123,7 +123,6 @@ public class CabController extends HttpServlet {
 
     private void addCab(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
-        // Handle adding a new cab
         String cabName = request.getParameter("cabName");
         String registrationNumber = request.getParameter("registrationNumber");
         String plateNumber = request.getParameter("plateNumber");
@@ -149,7 +148,6 @@ public class CabController extends HttpServlet {
 
     private void deleteCab(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
-        // Handle deleting a cab
         int cabId = Integer.parseInt(request.getParameter("id"));
 
         if (cabDAO.delete(cabId)) {

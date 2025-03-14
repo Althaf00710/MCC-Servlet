@@ -121,6 +121,12 @@ public class UserController extends HttpServlet {
             return;
         }
 
+        if(!Validations.isValidPassword(password)) {
+            session.setAttribute("error", "Password does not meet requirements.");
+            response.sendRedirect(request.getContextPath() + "/users/list");
+            return;
+        }
+
         // Handle avatar image upload
         String avatarUrl = null;
         try {
@@ -148,7 +154,7 @@ public class UserController extends HttpServlet {
         if (success) {
             session.setAttribute("success", "User added successfully!");
         } else {
-            session.setAttribute("error", "Failed to add user!");
+            session.setAttribute("error", "Password does not meet requirements!");
         }
         response.sendRedirect(request.getContextPath() + "/users/list");
     }
