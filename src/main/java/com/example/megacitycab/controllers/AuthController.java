@@ -22,7 +22,7 @@ public class AuthController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        if (!Validations.isNotNullOrEmpty(username) || !Validations.isValidPassword(password)) {
+        if (!Validations.isNotNullOrEmpty(username) || !Validations.isNotNullOrEmpty(password)) {
             request.setAttribute("error", "Invalid input!");
             request.getRequestDispatcher("/index.jsp").forward(request, response);
             return;
@@ -36,7 +36,7 @@ public class AuthController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/views/sites/admin/dashboard.jsp");
         } else {
             request.setAttribute("error", "Invalid credentials!");
-            request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }
 

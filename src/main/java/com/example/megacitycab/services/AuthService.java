@@ -11,8 +11,8 @@ public class AuthService {
         User user = userDao.getUserByUsername(username);
         if (user != null && PasswordHasher.verify(rawPassword, user.getPassword())) {
             userDao.updateLastActive(user.getId(), "ACTIVE");
-            return user; // Valid credentials
+            return user;
         }
-        return null; // Invalid
+        return null;
     }
 }

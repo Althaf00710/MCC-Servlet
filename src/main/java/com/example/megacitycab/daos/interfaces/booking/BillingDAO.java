@@ -12,3 +12,7 @@ public interface BillingDAO extends GenericDAO<Billing> {
     List<BillingListDTO> getTableData();
     double getTotalAmountForToday();
 }
+
+
+
+

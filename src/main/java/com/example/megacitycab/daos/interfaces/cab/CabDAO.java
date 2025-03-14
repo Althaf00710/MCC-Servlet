@@ -9,3 +9,4 @@ public interface CabDAO extends GenericDAO<Cab> {
     boolean checkExist (String registrationNumber);
     List<Cab> getCabsByCabType (int cabTypeId);
 }
+

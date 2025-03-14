@@ -10,3 +10,4 @@ public interface CustomerDAO extends GenericDAO<Customer> {
     Customer getCustomerByEmail(String email);
     boolean checkCustomerExistsByEmail(String email);
 }
+

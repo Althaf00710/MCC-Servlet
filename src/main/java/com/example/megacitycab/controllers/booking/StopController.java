@@ -79,7 +79,6 @@ public class StopController extends HttpServlet {
     private void getStopsByBooking(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-        // Implement this method in StopDAO
         List<Stop> stops = stopDAO.getByBookingId(bookingId);
         sendJsonResponse(response, stops);
     }

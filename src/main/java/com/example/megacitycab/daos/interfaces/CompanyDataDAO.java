@@ -6,3 +6,6 @@ public interface CompanyDataDAO {
     boolean updateData(CompanyData companyData);
     CompanyData getCompanyData();
 }
+
+
+

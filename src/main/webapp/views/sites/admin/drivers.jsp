@@ -355,5 +355,27 @@
   </div>
 </div>
 
+<%
+  String errorMessage = (String) session.getAttribute("error");
+  String successMessage = (String) session.getAttribute("success");
+  if (errorMessage != null) {
+%>
+<script>
+  alert("<%= errorMessage %>");
+</script>
+<%
+    session.removeAttribute("error"); // Clear message after displaying
+  }
+  if (successMessage != null) {
+%>
+<script>
+  alert("<%= successMessage %>");
+</script>
+<%
+    session.removeAttribute("success"); // Clear message after displaying
+  }
+%>
+
+
 </body>
 </html>
