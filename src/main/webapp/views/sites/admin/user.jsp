@@ -254,6 +254,11 @@
               <input type="text" name="password" required
                      class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
               >
+              <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 font-bold cursor-pointer group">!
+                <span class="absolute w-max bg-gray-800 text-white text-xs rounded-lg px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -top-8 right-0">
+                  Minimum 6 length, contain at least one digit.
+                </span>
+              </span>
             </div>
           </div>
 
@@ -474,6 +479,17 @@
     });
   </script>
 
+  <%
+    String errorMessage = (String) session.getAttribute("error");
+    if (errorMessage != null) {
+  %>
+  <script>
+    alert("<%= errorMessage %>");
+  </script>
+  <%
+      session.removeAttribute("error"); // Clear the error message after displaying
+    }
+  %>
 
 </body>
 </html>

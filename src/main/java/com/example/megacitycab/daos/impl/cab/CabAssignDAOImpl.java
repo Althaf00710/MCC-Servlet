@@ -92,7 +92,23 @@ public class CabAssignDAOImpl implements CabAssignDAO {
         return cabAssigns;
     }
 
+    @Override
+    public boolean isUserAssigned(int driverId) {
+        String query = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE status='ACTIVE' AND driverId=?";
 
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
+            stmt.setInt(1, driverId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

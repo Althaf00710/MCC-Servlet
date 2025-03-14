@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -60,6 +61,9 @@
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
                                 placeholder="Password"
                                 required>
+                        <c:if test="${not empty error}">
+                            <p style="color: red;">${error}</p>
+                        </c:if>
                     </div>
 
                     <!-- Submit Button -->

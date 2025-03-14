@@ -74,9 +74,6 @@ public class CustomerController extends HttpServlet {
             case "/delete":
                 deleteCustomer(request, response, session);
                 break;
-//            case "/updateImage":
-//                updateImage(request, response, session);
-//                break;
             case "/send-otp":
                 sendOTP(request, response, session);
                 break;

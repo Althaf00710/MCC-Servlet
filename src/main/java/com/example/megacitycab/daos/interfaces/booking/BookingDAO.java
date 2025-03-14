@@ -21,3 +21,4 @@ public interface BookingDAO extends GenericDAO<Booking> {
     List<TopBookedCabTypeDTO> getTop5BookedCabTypes();
     List<DailySalesDTO> getDailySales();
 }
+

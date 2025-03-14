@@ -51,9 +51,8 @@ public class Validations {
         return allowFuture || !date.after(currentDate);
     }
 
-    // Validate if a password meets complexity requirements
     public static boolean isValidPassword(String password) {
-        return password != null;
+        return password != null && password.length() >= 6 && password.matches(".*\\d.*");
     }
 
 }

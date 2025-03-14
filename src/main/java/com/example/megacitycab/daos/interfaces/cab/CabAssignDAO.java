@@ -9,4 +9,6 @@ public interface CabAssignDAO{
     boolean addCabAssign(CabAssign cabAssign);
     boolean cancelCabAssign(int id);
     List<CabAssign> getActiveCabAssigns();
+    boolean isUserAssigned(int userId);
 }
+

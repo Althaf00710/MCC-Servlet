@@ -11,7 +11,7 @@ public class CompanyDataDAOImpl implements CompanyDataDAO {
 
     @Override
     public boolean updateData(CompanyData companyData) {
-        String query = "UPDATE company_data SET address = ?, phone_number = ?, email = ?, tax = ?, discount = ?, min_amount_for_discount = ? WHERE id = 1";
+        String query = "UPDATE company_data SET address = ?, phoneNumber = ?, email = ?, tax = ?, discount = ?, minAmountForDiscount = ? WHERE id = 1";
 
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {

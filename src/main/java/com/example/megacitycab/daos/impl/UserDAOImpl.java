@@ -4,6 +4,7 @@ import com.example.megacitycab.daos.interfaces.UserDAO;
 import com.example.megacitycab.models.user.User;
 import com.example.megacitycab.utils.DbConfig;
 import com.example.megacitycab.utils.PasswordHasher;
+import com.example.megacitycab.utils.Validations;
 
 import java.sql.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
     private final DbConfig dbConfig = DbConfig.getInstance();
+    private final Validations validations = new Validations();
 
     @Override
     public User getUserByUsername(String username) {
@@ -50,11 +52,16 @@ public class UserDAOImpl implements UserDAO {
             return false;
         }
 
+        if (!validations.isValidPassword(user.getPassword())){
+            System.out.println("Password does not meet requirements.");
+            return false;
+        }
+
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, user.getUsername());
-            stmt.setString(2, PasswordHasher.hash(user.getPassword())); // Hash password
+            stmt.setString(2, PasswordHasher.hash(user.getPassword()));
             stmt.setString(3, user.getFirstName());
             stmt.setString(4, user.getLastName());
             stmt.setString(5, user.getEmail());
@@ -63,7 +70,7 @@ public class UserDAOImpl implements UserDAO {
             if (user.getAvatarUrl() != null) {
                 stmt.setString(8, user.getAvatarUrl());
             } else {
-                stmt.setNull(8, Types.VARCHAR); // Explicitly set NULL for VARCHAR column
+                stmt.setNull(8, Types.VARCHAR);
             }
 
             return stmt.executeUpdate() > 0;

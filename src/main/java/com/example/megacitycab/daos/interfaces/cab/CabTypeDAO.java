@@ -7,3 +7,6 @@ public interface CabTypeDAO extends GenericDAO<CabType> {
     boolean checkExist(String name);
     boolean updateImageUrl(CabType cabType);
 }
+
+
+
