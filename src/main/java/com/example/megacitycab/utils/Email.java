@@ -7,8 +7,8 @@ import java.util.Properties;
 public class Email {
     private static String SMTP_HOST = "smtp.gmail.com";
     private static String SMTP_PORT = "587";
-    private static String USERNAME = "megacitycabs@gmail.com";
-    private static String PASSWORD = "tzioahkhkraxlmrk";
+    private static String USERNAME = "";
+    private static String PASSWORD = "";
 
     public static void sendEmail(String toEmail, String subject, String message) {
         if (USERNAME == null || PASSWORD == null) {
